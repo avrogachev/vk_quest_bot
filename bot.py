@@ -1,13 +1,12 @@
 from vk import VK
 from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
-from vk.keyboards import Keyboard, ButtonColor
 from vk import types
 
 import logging
 
 from config import TOKEN, GROUP_ID#, PLUGINS_PATH #, loop
-import keyboards
+from keyboards import *
 
 logging.basicConfig(level="DEBUG")
 
