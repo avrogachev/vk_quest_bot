@@ -46,8 +46,8 @@ async def handle_hello(message: types.Message, data: dict):
 
 
 @dp.message_handler(payload={"command": 'bye'})
-async def handle_bye(message: types.Message, data: dict):
-    await message.reply("bye payload", keyboard=keyboard.get_empty_keyboard())
+async def handle_hello(message: types.Message, data: dict):
+    await message.reply("payload bye")
 
 
 @dp.message_handler(text="off")
