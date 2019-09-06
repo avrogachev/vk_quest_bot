@@ -20,32 +20,48 @@ dp = Dispatcher(vk, gid)
 
 @dp.message_handler(payload={"command": 'start'})
 async def handle_start(message: types.Message, data: dict):
-    await message.reply("Молодееец, начинаем работу с ботом! Получай клавиатуру", keyboard=kb_cpt.get_keyboard())
+    await message.reply("Космический рейс в лице бота Афанасия приветсвует тебя!\n"
+                        "Капитан должен зарегистрировать команду. "
+                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!", keyboard=kb_choose.get_keyboard())
 
 
-@dp.message_handler(text='hello')
-async def handle_text_start(message: types.Message, data: dict):
-    await message.reply("ты начал!")
+@dp.message_handler(payload={"command": 'kb_choose_captain'})
+async def handle_start(message: types.Message, data: dict):
+    await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ", keyboard=kb_back_to_start.get_keyboard())
 
 
-@dp.message_handler(payload={"command": 'hello'})
-async def handle_hello(message: types.Message, data: dict):
-    await message.reply("payload hello")
+@dp.message_handler(payload={"command": 'kb_choose_participant'})
+async def handle_start(message: types.Message, data: dict):
+    await message.reply("Дождись, пока капитан зарегистрируется и скажи мне название твоей команды. "
+                        "Если ты капитан, жми кнопку \"Назад\"", keyboard=kb_back_to_start.get_keyboard())
 
 
-@dp.message_handler(payload={"command": 'bye'})
-async def handle_hello(message: types.Message, data: dict):
-    await message.reply("payload bye")
+@dp.message_handler(payload={"command": 'kb_back_to_start'})
+async def handle_start(message: types.Message, data: dict):
+    await message.reply("В этот раз будь внимательнее:)", keyboard=kb_choose.get_keyboard())
 
 
-@dp.message_handler(text="off")
-async def off_keyboard(message: types.Message, data: dict):
-    await message.answer("Ok.", keyboard=keyboard_start.get_keyboard())
+@dp.message_handler(payload={"command": 'tasks'})
+async def handle_start(message: types.Message, data: dict):
+    await message.reply("Тут будет список заданий.")
 
 
-@dp.message_handler()
+@dp.message_handler(payload={"command": 'help'})
+async def handle_start(message: types.Message, data: dict):
+    await message.reply("Сейчас с вами свяжется агент из штаба, боту не помочь:(")
+
+
+@dp.message_handler(payload={"command": 'tasks'})
+async def handle_start(message: types.Message, data: dict):
+    await message.reply("Тут будет список заданий.")
+
+kb_main.add_text_button('Задания', payload={"command": 'tasks'})
+kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
+kb_main.add_text_button('Помощь', payload={"command": 'help'})
+
+@dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
 async def handle_other_messages(message: types.Message, data: dict):
-    await message.answer(message.text, keyboard=keyboard_start.get_keyboard() )#message.answer("another message", keyboard=keyboard.get_empty_keyboard())
+    await message.answer(message.text, keyboard=kb_main.get_keyboard())
 
 async def run():
     await dp.run_polling()
