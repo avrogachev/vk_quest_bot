@@ -26,38 +26,35 @@ async def handle_start(message: types.Message, data: dict):
 
 
 @dp.message_handler(payload={"command": 'kb_choose_captain'})
-async def handle_start(message: types.Message, data: dict):
+async def handle_choose_captain(message: types.Message, data: dict):
     await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ", keyboard=kb_back_to_start.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'kb_choose_participant'})
-async def handle_start(message: types.Message, data: dict):
+async def handle_choose_participant(message: types.Message, data: dict):
     await message.reply("Дождись, пока капитан зарегистрируется и скажи мне название твоей команды. "
                         "Если ты капитан, жми кнопку \"Назад\"", keyboard=kb_back_to_start.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'kb_back_to_start'})
-async def handle_start(message: types.Message, data: dict):
+async def handle_back_to_start(message: types.Message, data: dict):
     await message.reply("В этот раз будь внимательнее:)", keyboard=kb_choose.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'tasks'})
-async def handle_start(message: types.Message, data: dict):
+async def handle_tasks(message: types.Message, data: dict):
     await message.reply("Тут будет список заданий.")
 
 
 @dp.message_handler(payload={"command": 'help'})
-async def handle_start(message: types.Message, data: dict):
+async def handle_help(message: types.Message, data: dict):
     await message.reply("Сейчас с вами свяжется агент из штаба, боту не помочь:(")
 
 
-@dp.message_handler(payload={"command": 'tasks'})
-async def handle_start(message: types.Message, data: dict):
+@dp.message_handler(payload={"command": 'marks'})
+async def handle_marks(message: types.Message, data: dict):
     await message.reply("Тут будет список заданий.")
 
-kb_main.add_text_button('Задания', payload={"command": 'tasks'})
-kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
-kb_main.add_text_button('Помощь', payload={"command": 'help'})
 
 @dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
 async def handle_other_messages(message: types.Message, data: dict):
