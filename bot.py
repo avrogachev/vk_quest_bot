@@ -20,7 +20,7 @@ dp = Dispatcher(vk, gid)
 
 @dp.message_handler(payload={"command": 'start'})
 async def handle_start(message: types.Message, data: dict):
-    await message.reply("Космический рейс в лице бота Афанасия приветсвует тебя!\n"
+    await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!", keyboard=kb_choose.get_keyboard())
 
@@ -48,12 +48,12 @@ async def handle_tasks(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'help'})
 async def handle_help(message: types.Message, data: dict):
-    await message.reply("Сейчас с вами свяжется агент из штаба, боту не помочь:(")
+    await message.reply("Сейчас с вами свяжется агент из штаба, бот:(")
 
 
 @dp.message_handler(payload={"command": 'marks'})
 async def handle_marks(message: types.Message, data: dict):
-    await message.reply("Тут будет список заданий.")
+    await message.reply("Тут будут баллы команды.")
 
 
 @dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды

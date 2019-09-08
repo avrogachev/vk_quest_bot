@@ -17,3 +17,6 @@ kb_main.add_text_button('Задания', payload={"command": 'tasks'})
 kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
 kb_main.add_text_button('Помощь', payload={"command": 'help'})
 
+# keyboards for agents
+
+# keyboards for SHTAB
