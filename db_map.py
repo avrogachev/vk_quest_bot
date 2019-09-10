@@ -13,8 +13,8 @@ Base = declarative_base()
 class General(Base):  # Когда капитан вводит название команды, генерируется строка этой таблицы и таблицы CommandNames
     __tablename__ = 'GENERAL'
     id = Column(Integer, primary_key=True)
-    captain_id = Column(String(255))
-    command_name = Column(String(255))
+    captain_id = Column(String)
+    command_name = Column(String)
     r1 = Column(Integer)  # mark for solving - 0 to 15 ИСЗ
     k1 = Column(Integer)
     r2 = Column(Integer)  # проходная 1 РКК

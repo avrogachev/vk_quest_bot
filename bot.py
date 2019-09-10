@@ -1,11 +1,13 @@
+mport logging
+from vk import types
+from vk import BackgroundTask
 from vk import VK
 from vk.utils import TaskManager
-from vk.bot_framework import Dispatcher
-from vk import types
+from vk.bot_framework import Dispatcher, Storage
+# from vk.bot_framework import Storage
 
-import logging
 
-from config import TOKEN, GROUP_ID#, PLUGINS_PATH #, loop
+from config import TOKEN, GROUP_ID  # PLUGINS_PATH #, loop
 from keyboards import *
 
 logging.basicConfig(level="DEBUG")
@@ -17,9 +19,17 @@ api = vk.get_api()
 
 dp = Dispatcher(vk, gid)
 
+storage = Storage()
+dp.storage = storage
+
+really_needed_counter = 0
+
+dp.storage.place("really_needed_counter", really_needed_counter)
 
 @dp.message_handler(payload={"command": 'start'})
 async def handle_start(message: types.Message, data: dict):
+    async with BackgroundTask(very_slow_operation, 5) as task:
+        await task()
     await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
@@ -45,8 +55,10 @@ async def handle_back_to_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
+    c = dp.storage.get("really_needed_counter", 0)
     await message.reply("Тут будет список заданий.")
-
+    dp.storage.update("really_needed_counter", c + 1)
+    await message.answer(f"Hello! {c}")
 
 @dp.message_handler(payload={"command": 'help'})
 async def handle_help(message: types.Message, data: dict):
@@ -61,6 +73,12 @@ async def handle_marks(message: types.Message, data: dict):
 @dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
 async def handle_other_messages(message: types.Message, data: dict):
     await message.answer(message.text, keyboard=kb_main.get_keyboard())
+
+def very_slow_operation(a: int):
+    import time
+
+    time.sleep(10)
+    print(a + 10)
 
 async def run():
     await dp.run_polling()
