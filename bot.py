@@ -34,41 +34,35 @@ async def handle_start(message: types.Message, data: dict):
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
                         keyboard=kb_choose.get_keyboard())
-
-
 @dp.message_handler(payload={"command": 'kb_choose_captain'})
 async def handle_choose_captain(message: types.Message, data: dict):
     await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ",
                         keyboard=kb_back_to_start.get_keyboard())
-
-
 @dp.message_handler(payload={"command": 'kb_choose_participant'})
 async def handle_choose_participant(message: types.Message, data: dict):
     await message.reply("Дождись, пока капитан зарегистрируется и скажи мне название твоей команды. "
                         "Если ты капитан, жми кнопку \"Назад\"", keyboard=kb_back_to_start.get_keyboard())
-
-
 @dp.message_handler(payload={"command": 'kb_back_to_start'})
 async def handle_back_to_start(message: types.Message, data: dict):
     await message.reply("В этот раз будь внимательнее:)", keyboard=kb_choose.get_keyboard())
-
-
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
     c = dp.storage.get("really_needed_counter", 0)
     await message.reply("Тут будет список заданий.")
     dp.storage.update("really_needed_counter", c + 1)
     await message.answer(f"Hello! {c}")
-
 @dp.message_handler(payload={"command": 'help'})
 async def handle_help(message: types.Message, data: dict):
     await message.reply("Сейчас с вами свяжется агент из штаба, бот:(")
-
-
 @dp.message_handler(payload={"command": 'marks'})
 async def handle_marks(message: types.Message, data: dict):
     await message.reply("Тут будут баллы команды.")
-
+@dp.message_handler(commands=["buy"], have_args=[lambda arg: arg.isdigit(), lambda arg: arg > 10])
+async def handler(message: types.Message, data: dict):
+    """
+    Validate args. You may add to list lambda`s, or sync func`s with 1 arg (arg) and returned bool-like value.
+    """
+    await message.answer("Ok.")
 
 @dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
 async def handle_other_messages(message: types.Message, data: dict):
