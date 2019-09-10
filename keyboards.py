@@ -19,4 +19,4 @@ kb_main.add_text_button('Помощь', payload={"command": 'help'})
 
 # keyboards for agents
 
-# keyboards for SHTAB
+# keyboards for ШТАБ

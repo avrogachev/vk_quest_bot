@@ -22,12 +22,14 @@ dp = Dispatcher(vk, gid)
 async def handle_start(message: types.Message, data: dict):
     await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
-                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!", keyboard=kb_choose.get_keyboard())
+                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
+                        keyboard=kb_choose.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'kb_choose_captain'})
 async def handle_choose_captain(message: types.Message, data: dict):
-    await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ", keyboard=kb_back_to_start.get_keyboard())
+    await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ",
+                        keyboard=kb_back_to_start.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'kb_choose_participant'})
