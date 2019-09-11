@@ -1,7 +1,7 @@
 import logging
 from vk import types
 from vk import BackgroundTask
-from vk.bot_framework import BaseRule, BaseMiddleware
+from vk.bot_framework import BaseRule, BaseMiddleware, rules
 from vk import VK
 from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
