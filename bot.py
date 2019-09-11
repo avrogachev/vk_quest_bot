@@ -1,10 +1,10 @@
-mport logging
+import logging
 from vk import types
 from vk import BackgroundTask
 from vk.bot_framework import BaseRule, BaseMiddleware
 from vk import VK
 from vk.utils import TaskManager
-from vk.bot_framework import Dispatcher, Storage
+from vk.bot_framework import Dispatcher
 from vk.bot_framework import Storage
 
 
