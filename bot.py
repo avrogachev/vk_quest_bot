@@ -20,6 +20,31 @@ api = vk.get_api()
 
 dp = Dispatcher(vk, gid)
 
+
+class Commands(NamedRule):
+    key = "commands"
+
+    """
+    Own implementaion of commands rule.
+    """
+
+    def __init__(self, commands):
+        self.commands = commands
+        self.prefix = "!"
+
+    async def check(self, message: types.Message, data: dict):
+        text = message.text.lower()
+        _accepted = False
+        for command in self.commands:
+            if text == f"{self.prefix}{command}":
+                _accepted = True
+
+        return _accepted
+
+
+dp.setup_rule(Commands)  # bind
+
+
 USERS = {}  # schema - id: status
 
 class RegistrationMiddleware(BaseMiddleware):
@@ -95,13 +120,19 @@ async def handle_help(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'marks'})
 async def handle_marks(message: types.Message, data: dict):
     await message.reply("Тут будут баллы команды.")
+
+
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
     await message.reply("Is admin panel!")
+
+
 @dp.message_handler(rules.Command("get"), IsAdmin(False))
 async def get_admin_rights(message: types.Message, data: dict):
     USERS[message.from_id] = "admin"
     await message.reply("Successfully!")
+
+
 @dp.message_handler(commands=["buy"], have_args=[lambda arg: arg.isdigit(), lambda arg: arg > 10])
 async def handler(message: types.Message, data: dict):
     """
@@ -109,15 +140,18 @@ async def handler(message: types.Message, data: dict):
     """
     await message.answer("Ok.")
 
+
 @dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
 async def handle_other_messages(message: types.Message, data: dict):
     await message.answer(message.text, keyboard=kb_main.get_keyboard())
+
 
 def very_slow_operation(a: int):
     import time
 
     time.sleep(10)
     print(a + 10)
+
 
 async def run():
     await dp.run_polling()
