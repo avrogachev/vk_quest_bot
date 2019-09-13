@@ -113,19 +113,19 @@ async def handle_marks(message: types.Message, data: dict):
     await message.reply("Тут будут баллы команды.")
 
 
-@dp.message_handler(rules.Command("admin"), IsAdmin(True))
+@dp.message_handler(IsAdmin(True), text="admin")
 async def admin_panel(message: types.Message, data: dict):
     await message.reply("Is admin panel!")
 
 
-@dp.message_handler(rules.Command("get"), IsAdmin(False))
+@dp.message_handler(IsAdmin(False), text="get")
 async def get_admin_rights(message: types.Message, data: dict):
     USERS[message.from_id] = "admin"
     await message.reply("Successfully!")
 
 
 @dp.message_handler(commands=["buy"], have_args=[lambda arg: arg.isdigit(), lambda arg: arg > 10])
-async def handler(message: types.Message, data: dict):
+async def handle_arg_command(message: types.Message, data: dict):
     """
     Validate args. You may add to list lambda`s, or sync func`s with 1 arg (arg) and returned bool-like value.
     """
@@ -149,5 +149,7 @@ async def run():
 
 
 if __name__ == "__main__":
+    dp.setup_middleware(RegistrationMiddleware())  # setup middleware
+
     task_manager.add_task(run)
     task_manager.run(auto_reload=True)
