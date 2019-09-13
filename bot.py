@@ -21,30 +21,6 @@ api = vk.get_api()
 dp = Dispatcher(vk, gid)
 
 
-class Commands(NamedRule):
-    key = "commands"
-
-    """
-    Own implementation of commands rule.
-    """
-
-    def __init__(self, commands):
-        self.commands = commands
-        self.prefix = "!"
-
-    async def check(self, message: types.Message, data: dict):
-        text = message.text.lower()
-        _accepted = False
-        for command in self.commands:
-            if text == f"{self.prefix}{command}":
-                _accepted = True
-
-        return _accepted
-
-
-dp.setup_rule(Commands)  # bind
-
-
 USERS = {}  # schema - id: status
 
 

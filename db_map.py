@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.ext.declarative import declarative_base
 
-
+# https://sqlitebrowser.org - браузер для БД. Надо как-то её морду пробросить мне на комп.
 Base = declarative_base()
 
 # структура базы:
