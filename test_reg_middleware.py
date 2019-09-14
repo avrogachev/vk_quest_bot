@@ -73,6 +73,11 @@ async def get_admin_rights(message: types.Message, data: dict):
     await message.reply("Successfully!")
 
 
+@dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
+async def handle_other_messages(message: types.Message, data: dict):
+    await message.answer(message.text)
+
+
 async def run():
     dp.run_polling()
 
