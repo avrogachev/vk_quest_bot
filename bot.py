@@ -105,11 +105,12 @@ async def handle_back_to_start(message: types.Message, data: dict):
 async def handle_tasks(message: types.Message, data: dict):
     # c = dp.storage.get("really_needed_counter", 0)
     await message.reply(emoji.emojize("Тут мне нужно собрать табличку вида:"
-                                      "\n Чтобы о загадке, просто пришли мне её номер (просто числом, например, 2)"
-                                      "\n1. :key: 8391 :white_check_mark: "
+                                      "\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер "
+                                      "(просто числом, например, 2)"
+                                      "\n1. :key:" "8391 :white_check_mark: "
                                       "\n 2. :x: \n3. :x:"))
     # dp.storage.update("really_needed_counter", c + 1)
-    await message.answer(f"Hello! {c}")
+    # await message.answer(f"Hello! {c}")
 
 
 @dp.message_handler(payload={"command": 'help'})
