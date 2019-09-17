@@ -6,6 +6,7 @@ from vk import VK
 from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
 from vk.bot_framework import Storage
+import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
 
 
 from config import TOKEN, GROUP_ID  # PLUGINS_PATH #, loop
@@ -20,8 +21,12 @@ api = vk.get_api()
 
 dp = Dispatcher(vk, gid)
 
-
-USERS = {}  # schema - id: status
+TEXT = {1: 'first задание',
+        2: 'second задание',
+        3: 'third задание'}
+USERS = {}  # schema - id: TEAM_ID (equals to CAPTAIN_ID) or ADMIN or AGENT
+AGENTS = {}  # schema - id: stage
+ADMINS = {182840420: 'admin'}  # schema - id: status
 
 
 class RegistrationMiddleware(BaseMiddleware):
@@ -49,7 +54,7 @@ class IsAdmin(BaseRule):
         self.is_admin: bool = is_admin
 
     async def check(self, message: types.Message, data: dict):
-        status = USERS[message.from_id]
+        status = ADMINS[message.from_id]
         if not self.is_admin and status != "admin":
             return True
         elif not self.is_admin and status == "admin":
@@ -80,6 +85,7 @@ async def handle_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'kb_choose_captain'})
 async def handle_choose_captain(message: types.Message, data: dict):
+
     await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ",
                         keyboard=kb_back_to_start.get_keyboard())
 
@@ -97,9 +103,12 @@ async def handle_back_to_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
-    c = dp.storage.get("really_needed_counter", 0)
-    await message.reply("Тут будет список заданий.")
-    dp.storage.update("really_needed_counter", c + 1)
+    # c = dp.storage.get("really_needed_counter", 0)
+    await message.reply(emoji.emojize("Тут мне нужно собрать табличку вида:"
+                                      "\n Чтобы о загадке, просто пришли мне её номер (просто числом, например, 2)"
+                                      "\n1. :key: 8391 :white_check_mark: "
+                                      "\n 2. :x: \n3. :x:"))
+    # dp.storage.update("really_needed_counter", c + 1)
     await message.answer(f"Hello! {c}")
 
 
