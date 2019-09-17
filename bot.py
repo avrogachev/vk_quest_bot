@@ -24,7 +24,9 @@ dp = Dispatcher(vk, gid)
 TEXT = {1: 'first задание',
         2: 'second задание',
         3: 'third задание'}
-USERS = {}  # schema - id: TEAM_ID (equals to CAPTAIN_ID) or ADMIN or AGENT
+USERS = {}  # schema - id: lead, user, agent
+TEAMS = {}  # schema - id: team_name
+progress = {}  # schema - team_name: something to pass progress on stages
 AGENTS = {}  # schema - id: stage
 ADMINS = {182840420: 'admin'}  # schema - id: status
 
@@ -65,6 +67,25 @@ class IsAdmin(BaseRule):
             return False
 
 
+class IsLead(BaseRule):
+    """
+    Проверка, является ли человек капитаном команды
+    """
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = LEADS[message.from_id]
+        if not self.is_admin and status != "admin":
+            return True
+        elif not self.is_admin and status == "admin":
+            return False
+        elif self.is_admin and status == "admin":
+            return True
+        elif self.is_admin and status != "admin":
+            return False
+
+
 storage = Storage()
 dp.storage = storage
 
@@ -85,7 +106,7 @@ async def handle_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'kb_choose_captain'})
 async def handle_choose_captain(message: types.Message, data: dict):
-
+    USERS[message.from_id] = "lead"
     await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ",
                         keyboard=kb_back_to_start.get_keyboard())
 
@@ -98,17 +119,18 @@ async def handle_choose_participant(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'kb_back_to_start'})
 async def handle_back_to_start(message: types.Message, data: dict):
+    USERS[message.from_id] = "user"
     await message.reply("В этот раз будь внимательнее:)", keyboard=kb_choose.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
     # c = dp.storage.get("really_needed_counter", 0)
-    await message.reply(emoji.emojize("Тут мне нужно собрать табличку вида:"
-                                      "\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер "
-                                      "(просто числом, например, 2)"
-                                      "\n1. :key:" "8391 :white_check_mark: "
-                                      "\n 2. :x: \n3. :x:"))
+    await message.reply(emoji.emojize('Тут мне нужно собрать табличку вида:'
+                                      '\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
+                                      '(просто числом, например, 2)'
+                                      '\n1. :key:' '8391 :white_check_mark: '
+                                      '\n 2. :x: \n3. :x:'))
     # dp.storage.update("really_needed_counter", c + 1)
     # await message.answer(f"Hello! {c}")
 
@@ -125,13 +147,13 @@ async def handle_marks(message: types.Message, data: dict):
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
-    await message.reply("Is admin panel!")
+    await message.reply("Is admin panel! \U0001f600")
 
 
 @dp.message_handler(rules.Command("get"), IsAdmin(False))
 async def get_admin_rights(message: types.Message, data: dict):
     USERS[message.from_id] = "admin"
-    await message.reply("Successfully!")
+    await message.reply("Successfully! \U0001f600")
 
 
 @dp.message_handler(rules.Command("buy"), have_args=[lambda arg: arg.isdigit(), lambda arg: arg > 10])
@@ -140,6 +162,11 @@ async def handle_arg_command(message: types.Message, data: dict):
     Validate args. You may add to list lambda`s, or sync func`s with 1 arg (arg) and returned bool-like value.
     """
     await message.answer("Ok.")
+
+
+@dp.message_handler(text="1")  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_1_riddle(message: types.Message, data: dict):
+    await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
