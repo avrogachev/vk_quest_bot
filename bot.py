@@ -71,18 +71,18 @@ class IsLead(BaseRule):
     """
     Проверка, является ли человек капитаном команды
     """
-    def __init__(self, is_admin: bool):
-        self.is_admin: bool = is_admin
+    #def __init__(self, is_admin: bool):
+    #    self.is_admin: bool = is_admin
 
     async def check(self, message: types.Message, data: dict):
         status = LEADS[message.from_id]
-        if not self.is_admin and status != "admin":
+        if status == "lead_choose":
+            return "lead_choose"
+        elif status == "user_choose":
+            return "user_choose"
+        elif status == "lead_choose":
             return True
-        elif not self.is_admin and status == "admin":
-            return False
-        elif self.is_admin and status == "admin":
-            return True
-        elif self.is_admin and status != "admin":
+        elif self.is_admin and status != "lead":
             return False
 
 
@@ -106,13 +106,14 @@ async def handle_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'kb_choose_captain'})
 async def handle_choose_captain(message: types.Message, data: dict):
-    USERS[message.from_id] = "lead"
+    USERS[message.from_id] = "lead_choose"
     await message.reply("Как называется твоя команда? Если ты не капитан, жми кнопку \"Назад\" ",
                         keyboard=kb_back_to_start.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'kb_choose_participant'})
 async def handle_choose_participant(message: types.Message, data: dict):
+    USERS[message.from_id] = "user_choose"
     await message.reply("Дождись, пока капитан зарегистрируется и скажи мне название твоей команды. "
                         "Если ты капитан, жми кнопку \"Назад\"", keyboard=kb_back_to_start.get_keyboard())
 
@@ -169,9 +170,21 @@ async def handle_1_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler()  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
+@dp.message_handler(IsLead("lead_choose"))  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
+async def handle_lead_chooses_team_name(message: types.Message, data: dict):
+    TEAMS[message.from_id] = message.text
+    await message.answer("Ура, команда %s зарегистрирована!" % TEAMS[message.from_id], keyboard=kb_main.get_keyboard())
+
+
+@dp.message_handler(IsLead("user_choose"))  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
 async def handle_other_messages(message: types.Message, data: dict):
-    await message.answer(message.text, keyboard=kb_main.get_keyboard())
+    for ids, names in TEAMS.items():
+        if names == message.text:
+            USERS[message.from_id] = "user"
+            await message.answer(message.text, keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Не вижу такой команды... Посмотри у капитана, как он её записал и попробуй ещё раз.")
+
 
 
 def very_slow_operation(a: int):
