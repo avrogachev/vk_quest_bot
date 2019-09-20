@@ -25,7 +25,7 @@ TEXT = {1: 'first задание',
         2: 'second задание',
         3: 'third задание'}
 USERS = {}  # schema - id: lead, user, agent
-TEAMS = {}  # schema - id: team_name
+TEAMS = {}  # schema - id: team_id = captain_id
 progress = {}  # schema - team_name: something to pass progress on stages
 AGENTS = {}  # schema - id: stage
 ADMINS = {182840420: 'admin'}  # schema - id: status
@@ -73,6 +73,18 @@ class IsLeadChoose(BaseRule):
     async def check(self, message: types.Message, data: dict):
         status = LEADS[message.from_id]
         if status == "lead_choose":
+            return True
+        else:
+            return False
+
+
+class IsUserChoose(BaseRule):
+    """
+    Проверка, является ли человек капитаном команды
+    """
+    async def check(self, message: types.Message, data: dict):
+        status = LEADS[message.from_id]
+        if status == "user_choose":
             return True
         else:
             return False
@@ -169,12 +181,13 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
 
 
 @dp.message_handler(IsUserChoose())  # обработка названий команды
-async def handle_other_messages(message: types.Message, data: dict):
+async def handle_user_choose_team(message: types.Message, data: dict):
     for ids, names in TEAMS.items():
         if names == message.text:
             USERS[message.from_id] = "user"
+            TEAMS[message.from_id] = id
             # поменяли статус на юзер с юзер_чуз. Также надо проассоциировать команду
-            await message.answer(message.text, keyboard=kb_main.get_keyboard())
+            await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Не вижу такой команды... Посмотри у капитана, как он её записал и попробуй ещё раз.")
 
