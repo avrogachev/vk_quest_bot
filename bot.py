@@ -35,7 +35,6 @@ class RegistrationMiddleware(BaseMiddleware):
     """
     Register users in bot.
     """
-
     async def pre_process_event(self, event, data: dict):
         if event["type"] == "message_new":
             from_id = event["object"]["from_id"]
@@ -67,22 +66,15 @@ class IsAdmin(BaseRule):
             return False
 
 
-class IsLead(BaseRule):
+class IsLeadChoose(BaseRule):
     """
     Проверка, является ли человек капитаном команды
     """
-    #def __init__(self, is_admin: bool):
-    #    self.is_admin: bool = is_admin
-
     async def check(self, message: types.Message, data: dict):
         status = LEADS[message.from_id]
         if status == "lead_choose":
-            return "lead_choose"
-        elif status == "user_choose":
-            return "user_choose"
-        elif status == "lead_choose":
             return True
-        elif self.is_admin and status != "lead":
+        else:
             return False
 
 
@@ -170,21 +162,21 @@ async def handle_1_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(IsLead("lead_choose"))  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
+@dp.message_handler(IsLeadChoose())  # обработка названий команды. TODO: машина состояний
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     TEAMS[message.from_id] = message.text
     await message.answer("Ура, команда %s зарегистрирована!" % TEAMS[message.from_id], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(IsLead("user_choose"))  # обработка названий команды. TODO: машина состояний для определения момента ввода команды
+@dp.message_handler(IsUserChoose())  # обработка названий команды
 async def handle_other_messages(message: types.Message, data: dict):
     for ids, names in TEAMS.items():
         if names == message.text:
             USERS[message.from_id] = "user"
+            # поменяли статус на юзер с юзер_чуз. Также надо проассоциировать команду
             await message.answer(message.text, keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Не вижу такой команды... Посмотри у капитана, как он её записал и попробуй ещё раз.")
-
 
 
 def very_slow_operation(a: int):
