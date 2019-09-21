@@ -26,6 +26,7 @@ TEXT = {1: 'first задание',
         3: 'third задание'}
 USERS = {}  # schema - id: lead, user, agent
 TEAMS = {}  # schema - id: team_id = captain_id
+LEADS = {}
 progress = {}  # schema - team_name: something to pass progress on stages
 AGENTS = {}  # schema - id: stage
 ADMINS = {182840420: 'admin'}  # schema - id: status
@@ -71,7 +72,7 @@ class IsLeadChoose(BaseRule):
     Проверка, является ли человек капитаном команды
     """
     async def check(self, message: types.Message, data: dict):
-        status = LEADS[message.from_id]
+        status = USERS[message.from_id]
         if status == "lead_choose":
             return True
         else:
@@ -83,7 +84,7 @@ class IsUserChoose(BaseRule):
     Проверка, является ли человек капитаном команды
     """
     async def check(self, message: types.Message, data: dict):
-        status = LEADS[message.from_id]
+        status = USERS[message.from_id]
         if status == "user_choose":
             return True
         else:
@@ -102,6 +103,14 @@ dp.storage.place("really_needed_counter", really_needed_counter)
 async def handle_start(message: types.Message, data: dict):
     async with BackgroundTask(very_slow_operation, 5) as task:
         await task()
+    await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
+                        "Капитан должен зарегистрировать команду. "
+                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
+                        keyboard=kb_choose.get_keyboard())
+
+
+@dp.message_handler(rules.Command("init"))
+async def handle_start_another(message: types.Message, data: dict):
     await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
@@ -174,8 +183,19 @@ async def handle_1_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
 
 
+@dp.message_handler(text="2")  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_2_riddle(message: types.Message, data: dict):
+    await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
+
+    
+@dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_1_riddle(message: types.Message, data: dict):
+    await message.answer(TEXT[3], keyboard=kb_main.get_keyboard())
+
+
 @dp.message_handler(IsLeadChoose())  # обработка названий команды. TODO: машина состояний
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
+    USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
     await message.answer("Ура, команда %s зарегистрирована!" % TEAMS[message.from_id], keyboard=kb_main.get_keyboard())
 
