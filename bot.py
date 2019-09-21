@@ -187,9 +187,9 @@ async def handle_1_riddle(message: types.Message, data: dict):
 async def handle_2_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
 
-    
+
 @dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
-async def handle_1_riddle(message: types.Message, data: dict):
+async def handle_3_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[3], keyboard=kb_main.get_keyboard())
 
 
