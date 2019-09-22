@@ -24,7 +24,7 @@ dp = Dispatcher(vk, gid)
 TEXT = {1: 'first задание',
         2: 'second задание',
         3: 'third задание'}
-USERS = {}  # schema - id: lead, user, agent
+USERS = {}  # schema - id: lead, user, agent dict of dicts????????? it is the solution!!!
 TEAMS = {}  # schema - id: team_id = captain_id
 LEADS = {}
 progress = {}  # schema - team_name: something to pass progress on stages
@@ -162,6 +162,11 @@ async def handle_marks(message: types.Message, data: dict):
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
     await message.reply("Is admin panel! \U0001f600")
+
+
+@dp.message_handler(rules.Command("teams"), IsAdmin(True))
+async def admin_list_of_teams(message: types.Message, data: dict):
+    await message.reply("Is admin panel! \U0001f600" + TEAMS.items())
 
 
 @dp.message_handler(rules.Command("get"), IsAdmin(False))
