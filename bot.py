@@ -6,6 +6,7 @@ from vk import VK
 from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
 from vk.bot_framework import Storage
+from vk.bot_framework.addons import cooldown
 import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
 
 
@@ -93,10 +94,21 @@ class IsUserChoose(BaseRule):
 
 storage = Storage()
 dp.storage = storage
+cooldown.set_cooldown_message(
+    "Подождите секундочку {cooldown} ..."
+)  # or use standart message
 
 really_needed_counter = 0
 
 dp.storage.place("really_needed_counter", really_needed_counter)
+
+
+@dp.message_handler(text="text")
+@cooldown.cooldown_handler(
+    storage, cooldown_time=10, for_specify_user=True
+)  # have a simply design
+async def test(msg: types.Message, data):
+    await msg.answer("Hello!")
 
 
 @dp.message_handler(payload={"command": 'start'})
