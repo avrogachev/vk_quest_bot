@@ -17,6 +17,16 @@ kb_main.add_text_button('Задания', payload={"command": 'tasks'})
 kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
 kb_main.add_text_button('Помощь', payload={"command": 'help'})
 
+
 # keyboards for agents
+kb_agent = Keyboard(one_time=False)
+kb_agent.add_text_button('Список команд', payload={"command": 'tasks'})  # список команд, отгадавших вашу загадку
+kb_agent.add_text_button('Баллы команд', payload={"command": 'marks'})  # какие баллы и когда вы выставили
+kb_agent.add_text_button('Помощь', payload={"command": 'help'})  # ну тут я влетаю на помощь
 
 # keyboards for ШТАБ
+
+kb_admin = Keyboard(one_time=False)
+kb_admin.add_text_button('Список команд', payload={"command": 'tasks'})
+kb_admin.add_text_button('Баллы команд', payload={"command": 'marks'})
+kb_admin.add_text_button('Помощь', payload={"command": 'help'})

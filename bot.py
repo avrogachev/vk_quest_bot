@@ -178,7 +178,12 @@ async def admin_panel(message: types.Message, data: dict):
 
 @dp.message_handler(rules.Command("teams"), IsAdmin(True))
 async def admin_list_of_teams(message: types.Message, data: dict):
-    await message.reply("Is admin panel! \U0001f600" + TEAMS.items())
+    await message.reply("Print list of teams to admin")
+
+
+@dp.message_handler(rules.Command("teams"), IsAdmin(True))
+async def admin_list_of_teams(message: types.Message, data: dict):
+    await message.reply("Print list of teams to admin")
 
 
 @dp.message_handler(rules.Command("get"), IsAdmin(False))
