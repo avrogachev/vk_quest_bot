@@ -1,12 +1,10 @@
 import logging
 from vk import types
-from vk import BackgroundTask
 from vk.bot_framework import BaseRule, BaseMiddleware, rules
 from vk import VK
 from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
 from vk.bot_framework import Storage
-from vk.bot_framework.addons import cooldown
 import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
 
 
@@ -234,31 +232,31 @@ async def handle_3_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[3], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(IsLeadChoose())  # обработка названий команды. TODO: машина состояний
+@dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
     await message.answer("Ура, команда %s зарегистрирована!" % TEAMS[message.from_id], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(IsUserChoose())  # обработка названий команды
+@dp.message_handler(IsUserChoose(True))  # обработка названий команды
 async def handle_user_choose_team(message: types.Message, data: dict):
-    for ids, names in TEAMS.items():
-        if names == message.text:
-            USERS[message.from_id] = "user"
-            TEAMS[message.from_id] = id
-            # поменяли статус на юзер с юзер_чуз. Также надо проассоциировать команду
-            await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
-        else:
-            await message.answer("Не вижу такой команды... Посмотри у капитана, как он её записал и попробуй ещё раз.")
+    await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
+    #   for ids, names in TEAMS.items():
+    #       if names == message.text:
+    #           USERS[message.from_id] = "user"
+    #           TEAMS[message.from_id] = id
+    #           # поменяли статус на юзер с юзер_чуз. Также надо проассоциировать команду
+    #           await message.answer("Отлично,  %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
+    #       else:
+    #           await message.answer("Не вижу такой команды...  как он её записал и попробуй ещё раз.")
 
 
 async def run():
-    await dp.run_polling()
+    dp.run_polling()
 
 
 if __name__ == "__main__":
     dp.setup_middleware(RegistrationMiddleware())  # setup middleware
-
     task_manager.add_task(run)
     task_manager.run(auto_reload=True)
