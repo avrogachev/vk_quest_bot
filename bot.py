@@ -11,7 +11,7 @@ import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
 from config import TOKEN, GROUP_ID  # PLUGINS_PATH #, loop
 from keyboards import *
 
-logging.basicConfig(level="DEBUG")
+logging.basicConfig(level="INFO")
 
 vk = VK(TOKEN)
 gid = GROUP_ID
@@ -106,6 +106,26 @@ class IsLeadChoose(BaseRule):
             return False
 
 
+class IsUser(BaseRule):
+    """
+    Проверка статуса капитана
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "user":
+            return True
+        elif not self.is_admin and status == "user":
+            return False
+        elif self.is_admin and status == "user":
+            return True
+        elif self.is_admin and status != "user":
+            return False
+
+
 class IsUserChoose(BaseRule):
     """
     Проверка статуса члена команды
@@ -133,14 +153,6 @@ dp.storage = storage
 @dp.message_handler(payload={"command": 'start'})
 async def handle_start(message: types.Message, data: dict):
     await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
-                        "Капитан должен зарегистрировать команду. "
-                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
-                        keyboard=kb_choose.get_keyboard())
-
-
-@dp.message_handler(IsNew(True))
-async def get_start_message(message: types.Message, data: dict):
-    await message.reply("Привет! Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
                         keyboard=kb_choose.get_keyboard())
@@ -241,6 +253,7 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
 
 @dp.message_handler(IsUserChoose(True))  # обработка названий команды
 async def handle_user_choose_team(message: types.Message, data: dict):
+    USERS[message.from_id] = "user"
     await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
     #   for ids, names in TEAMS.items():
     #       if names == message.text:
@@ -250,6 +263,14 @@ async def handle_user_choose_team(message: types.Message, data: dict):
     #           await message.answer("Отлично,  %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
     #       else:
     #           await message.answer("Не вижу такой команды...  как он её записал и попробуй ещё раз.")
+
+
+@dp.message_handler(IsNew(True))
+async def get_start_message(message: types.Message, data: dict):
+    await message.reply("Привет! Космический рейс в лице бота Афанасия приветствует тебя!\n"
+                        "Капитан должен зарегистрировать команду. "
+                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
+                        keyboard=kb_choose.get_keyboard())
 
 
 async def run():
