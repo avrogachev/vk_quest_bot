@@ -205,11 +205,6 @@ async def admin_list_of_teams(message: types.Message, data: dict):
     await message.reply("Print list of teams to admin")
 
 
-@dp.message_handler(rules.Command("teams"), IsAdmin(True))
-async def admin_list_of_teams(message: types.Message, data: dict):
-    await message.reply("Print list of teams to admin")
-
-
 @dp.message_handler(rules.Command("get"), IsAdmin(False))
 async def get_admin_rights(message: types.Message, data: dict):
     USERS[message.from_id] = "admin"
