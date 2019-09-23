@@ -90,25 +90,41 @@ class IsNew(BaseRule):
 
 class IsLeadChoose(BaseRule):
     """
-    Проверка, является ли человек капитаном команды
+    Проверка статуса капитана
     """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
     async def check(self, message: types.Message, data: dict):
-        status = USERS[message.from_id]
-        if status == "lead_choose":
+        status = ADMINS[message.from_id]
+        if not self.is_admin and status != "lead_choose":
             return True
-        else:
+        elif not self.is_admin and status == "lead_choose":
+            return False
+        elif self.is_admin and status == "lead_choose":
+            return True
+        elif self.is_admin and status != "lead_choose":
             return False
 
 
 class IsUserChoose(BaseRule):
     """
-    Проверка, является ли человек капитаном команды
+    Проверка статуса члена команды
     """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
     async def check(self, message: types.Message, data: dict):
-        status = USERS[message.from_id]
-        if status == "user_choose":
+        status = ADMINS[message.from_id]
+        if not self.is_admin and status != "user_choose":
             return True
-        else:
+        elif not self.is_admin and status == "user_choose":
+            return False
+        elif self.is_admin and status == "user_choose":
+            return True
+        elif self.is_admin and status != "user_choose":
             return False
 
 
@@ -123,18 +139,8 @@ really_needed_counter = 0
 dp.storage.place("really_needed_counter", really_needed_counter)
 
 
-@dp.message_handler(text="text")
-@cooldown.cooldown_handler(
-    storage, cooldown_time=10, for_specify_user=True
-)  # have a simply design
-async def test(msg: types.Message, data):
-    await msg.answer("Hello!")
-
-
 @dp.message_handler(payload={"command": 'start'})
 async def handle_start(message: types.Message, data: dict):
-    async with BackgroundTask(very_slow_operation, 5) as task:
-        await task()
     await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
@@ -260,16 +266,6 @@ async def handle_user_choose_team(message: types.Message, data: dict):
             await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Не вижу такой команды... Посмотри у капитана, как он её записал и попробуй ещё раз.")
-
-
-
-
-
-def very_slow_operation(a: int):
-    import time
-
-    time.sleep(10)
-    print(a + 10)
 
 
 async def run():
