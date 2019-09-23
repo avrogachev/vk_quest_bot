@@ -41,7 +41,7 @@ class RegistrationMiddleware(BaseMiddleware):
         if event["type"] == "message_new":
             from_id = event["object"]["from_id"]
             if from_id not in USERS:
-                USERS[from_id] = "user"
+                USERS[from_id] = "new"
         return data
 
     async def post_process_event(self):
@@ -65,6 +65,26 @@ class IsAdmin(BaseRule):
         elif self.is_admin and status == "admin":
             return True
         elif self.is_admin and status != "admin":
+            return False
+
+
+class IsNew(BaseRule):
+    """
+    Check admin rights of user.
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = ADMINS[message.from_id]
+        if not self.is_admin and status != "new":
+            return True
+        elif not self.is_admin and status == "new":
+            return False
+        elif self.is_admin and status == "new":
+            return True
+        elif self.is_admin and status != "new":
             return False
 
 
@@ -121,9 +141,17 @@ async def handle_start(message: types.Message, data: dict):
                         keyboard=kb_choose.get_keyboard())
 
 
+@dp.message_handler(IsNew(True))
+async def get_start_message(message: types.Message, data: dict):
+    await message.reply("Привет! Космический рейс в лице бота Афанасия приветствует тебя!\n"
+                        "Капитан должен зарегистрировать команду. "
+                        "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
+                        keyboard=kb_choose.get_keyboard())
+
+
 @dp.message_handler(rules.Command("init"))
 async def handle_start_another(message: types.Message, data: dict):
-    await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
+    await message.reply("Здравствуй! Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
                         keyboard=kb_choose.get_keyboard())
@@ -173,7 +201,7 @@ async def handle_marks(message: types.Message, data: dict):
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
-    await message.reply("Is admin panel! \U0001f600")
+    await message.reply("Is admin panel! \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
 @dp.message_handler(rules.Command("teams"), IsAdmin(True))
@@ -232,6 +260,9 @@ async def handle_user_choose_team(message: types.Message, data: dict):
             await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Не вижу такой команды... Посмотри у капитана, как он её записал и попробуй ещё раз.")
+
+
+
 
 
 def very_slow_operation(a: int):
