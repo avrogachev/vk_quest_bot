@@ -77,7 +77,7 @@ class IsNew(BaseRule):
         self.is_admin: bool = is_admin
 
     async def check(self, message: types.Message, data: dict):
-        status = ADMINS[message.from_id]
+        status = USERS[message.from_id]
         if not self.is_admin and status != "new":
             return True
         elif not self.is_admin and status == "new":
@@ -97,7 +97,7 @@ class IsLeadChoose(BaseRule):
         self.is_admin: bool = is_admin
 
     async def check(self, message: types.Message, data: dict):
-        status = ADMINS[message.from_id]
+        status = USERS[message.from_id]
         if not self.is_admin and status != "lead_choose":
             return True
         elif not self.is_admin and status == "lead_choose":
@@ -117,7 +117,7 @@ class IsUserChoose(BaseRule):
         self.is_admin: bool = is_admin
 
     async def check(self, message: types.Message, data: dict):
-        status = ADMINS[message.from_id]
+        status = USERS[message.from_id]
         if not self.is_admin and status != "user_choose":
             return True
         elif not self.is_admin and status == "user_choose":
@@ -130,13 +130,6 @@ class IsUserChoose(BaseRule):
 
 storage = Storage()
 dp.storage = storage
-cooldown.set_cooldown_message(
-    "Подождите секундочку {cooldown} ..."
-)  # or use standart message
-
-really_needed_counter = 0
-
-dp.storage.place("really_needed_counter", really_needed_counter)
 
 
 @dp.message_handler(payload={"command": 'start'})
@@ -185,19 +178,16 @@ async def handle_back_to_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
-    # c = dp.storage.get("really_needed_counter", 0)
     await message.reply(emoji.emojize('Тут мне нужно собрать табличку вида:'
                                       '\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
                                       '(просто числом, например, 2)'
                                       '\n1. :key:' '8391 :white_check_mark: '
                                       '\n 2. :x: \n3. :x:'))
-    # dp.storage.update("really_needed_counter", c + 1)
-    # await message.answer(f"Hello! {c}")
 
 
 @dp.message_handler(payload={"command": 'help'})
 async def handle_help(message: types.Message, data: dict):
-    await message.reply("Сейчас с вами свяжется агент из штаба, бот:(")
+    await message.reply("Сейчас с вами свяжется агент из штаба, боту грустно, что он непонятный:(")
 
 
 @dp.message_handler(payload={"command": 'marks'})
