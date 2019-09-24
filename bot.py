@@ -208,11 +208,11 @@ async def handle_back_to_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
-    await message.reply(emoji.emojize('Тут мне нужно собрать табличку вида:'
+    await message.reply('Тут мне нужно собрать табличку вида:'
                                       '\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
                                       '(просто числом, например, 2)'
                                       '\n1. :key:' '8391 :white_check_mark: '
-                                      '\n 2. :x: \n3. :x:'))
+                                      '\n 2. :x: \n3. :x:')
 
 
 @dp.message_handler(payload={"command": 'help'})
@@ -227,7 +227,8 @@ async def handle_marks(message: types.Message, data: dict):
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
-    await message.reply("Is admin panel! \U0001f600", keyboard=kb_admin.get_keyboard())
+    USERS[message.from_id] = 'user_choose'
+    await message.reply("You now is user_choose! \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
 @dp.message_handler(rules.Command("teams"), IsAdmin(True))
@@ -270,17 +271,20 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     TEAMS[message.from_id] = message.text
     LEADS[message.from_id] = message.from_id  # сам себе капитан
     await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
-                         "пусть напишут мне код \n %s" % (TEAMS[message.from_id], message.from_id),
+                         "пусть напишут мне этот код: \n%s" % (TEAMS[message.from_id], message.from_id),
                          keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(IsUserChoose(True))  # обработка названий команды
 async def handle_user_choose_team(message: types.Message, data: dict):
-    if USERS[message.text] == 'lead':
-        LEADS[message.from_id] = message.text
-        USERS[message.from_id] = 'user'
-        await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % TEAMS[message.text],
-                             keyboard=kb_main.get_keyboard())
+    if int(message.text) in USERS:
+        if USERS[int(message.text)] == 'lead':
+            LEADS[message.from_id] = message.text
+            USERS[message.from_id] = 'user'
+            await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % int(message.text),
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Перепроверь, у капитана точно %s? Если не поможет, пиши в помощь" % message.text)
     else:
         await message.answer("Перепроверь, у капитана точно %s? Напиши мне точно!" % message.text)
 
