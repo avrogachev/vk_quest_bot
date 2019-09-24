@@ -49,6 +49,7 @@ TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
 AGENTS = {}  # schema - id: stage
+PROGRESS = {}
 ADMINS = {182840420: 'admin'}  # schema - id: status
 
 
@@ -293,7 +294,11 @@ async def handle_arg_command(message: types.Message, data: dict):
 
 @dp.message_handler(text="1")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_1_riddle(message: types.Message, data: dict):
-    await message.answer(TEXT[1], keyboard=kb_back_to_main.get_keyboard())
+    if USERS[message.from_id] == 'lead':
+        PROGRESS[message.from_id] = '1'
+        await message.answer(TEXT[1], keyboard=kb_back_to_main.get_keyboard())
+    else:
+        await message.answer('Принимаю ответы только от капитана!\n' + TEXT[1], keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(text="2")  # TODO: проверка чёпочём решили ли загадку и что там
@@ -304,6 +309,13 @@ async def handle_2_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_3_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[3], keyboard=kb_back_to_main.get_keyboard())
+
+
+@dp.message_handler(payload={"command": 'back_to_main'})
+async def handle_off_riddle(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = 'idle'
+    await message.reply("Хорошо",
+                        keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
