@@ -16,8 +16,8 @@ kb_back_to_main = Keyboard(one_time=False)
 kb_back_to_main.add_text_button('Хватит с меня этой загадки', payload={"command": 'kb_back_to_main'})
 
 kb_main = Keyboard(one_time=False)
-kb_main.add_text_button('Задания', payload={"command": 'tasks'})
-kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
+kb_main.add_text_button('Задания и баллы', payload={"command": 'tasks'})
+# kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
 kb_main.add_text_button('Помощь', payload={"command": 'help'})
 
 

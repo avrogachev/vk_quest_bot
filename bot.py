@@ -326,11 +326,36 @@ async def handle_back_to_start(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
-    await message.reply('Тут мне нужно собрать табличку вида:'
-                        '\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
-                        '(просто числом, например, 2)'
-                        '\n1. :key:' '8391 :white_check_mark: '
-                        '\n 2. :x: \n3. :x:')
+    await message.reply('\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
+                        '(просто числом, например, 2)\n'
+                        'Ваши баллы в сумме: %d \n'
+                        '1. %d\n'
+                        '2. %d\n'
+                        '3. %d\n'
+                        '4. %d\n'
+                        '5. %d\n'
+                        '6. %d\n'
+                        '7. %d\n'
+                        '8. %d\n'
+                        '9. %d\n'
+                        '10. %d\n'
+                        '11. %d\n'
+                        '12. %d\n'
+                        'Фотозадания: %d из 5\n' % (MARKS[message.from_id][1] + MARKS[message.from_id][2] +
+                                                    MARKS[message.from_id][3] + MARKS[message.from_id][4] +
+                                                    MARKS[message.from_id][5] + MARKS[message.from_id][6] +
+                                                    MARKS[message.from_id][7] + MARKS[message.from_id][8] +
+                                                    MARKS[message.from_id][9] + MARKS[message.from_id][10] +
+                                                    MARKS[message.from_id][11] + MARKS[message.from_id][12] +
+                                                    MARKS[message.from_id][13], MARKS[message.from_id][1],
+                                                    MARKS[message.from_id][2],
+                                                    MARKS[message.from_id][3], MARKS[message.from_id][4],
+                                                    MARKS[message.from_id][5], MARKS[message.from_id][6],
+                                                    MARKS[message.from_id][7], MARKS[message.from_id][8],
+                                                    MARKS[message.from_id][9], MARKS[message.from_id][10],
+                                                    MARKS[message.from_id][11], MARKS[message.from_id][12],
+                                                    MARKS[message.from_id][13])
+                        )
 
 
 @dp.message_handler(payload={"command": 'help'})
@@ -338,9 +363,9 @@ async def handle_help(message: types.Message, data: dict):
     await message.reply("Сейчас с вами свяжется агент из штаба, боту грустно, что он непонятный:(")
 
 
-@dp.message_handler(payload={"command": 'marks'})
-async def handle_marks(message: types.Message, data: dict):
-    await message.reply(t0)
+#@dp.message_handler(payload={"command": 'marks'})
+#async def handle_marks(message: types.Message, data: dict):
+#    await message.reply(t0)
 
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
@@ -677,7 +702,7 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
     LEADS[message.from_id] = message.from_id  # сам себе капитан
-    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0}
+    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12:0, 13:0}
     await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
                          "пусть напишут мне этот код: \n%s" % (TEAMS[message.from_id], message.from_id),
                          keyboard=kb_main.get_keyboard())
