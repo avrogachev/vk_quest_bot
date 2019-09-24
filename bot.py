@@ -293,17 +293,17 @@ async def handle_arg_command(message: types.Message, data: dict):
 
 @dp.message_handler(text="1")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_1_riddle(message: types.Message, data: dict):
-    await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
+    await message.answer(TEXT[1], keyboard=kb_back_to_main.get_keyboard())
 
 
 @dp.message_handler(text="2")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_2_riddle(message: types.Message, data: dict):
-    await message.answer(TEXT[1], keyboard=kb_main.get_keyboard())
+    await message.answer(TEXT[2], keyboard=kb_back_to_main.get_keyboard())
 
 
 @dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_3_riddle(message: types.Message, data: dict):
-    await message.answer(TEXT[3], keyboard=kb_main.get_keyboard())
+    await message.answer(TEXT[3], keyboard=kb_back_to_main.get_keyboard())
 
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний

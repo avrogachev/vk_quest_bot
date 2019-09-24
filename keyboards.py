@@ -12,6 +12,9 @@ kb_choose.add_text_button('Я участник', payload={"command": 'kb_choose_
 kb_back_to_start = Keyboard(one_time=False)
 kb_back_to_start.add_text_button('Назад', payload={"command": 'kb_back_to_start'})
 
+kb_back_to_main = Keyboard(one_time=False)
+kb_back_to_main.add_text_button('Хватит с меня этой загадки', payload={"command": 'kb_back_to_ьфшт'})
+
 kb_main = Keyboard(one_time=False)
 kb_main.add_text_button('Задания', payload={"command": 'tasks'})
 kb_main.add_text_button('Баллы команды', payload={"command": 'marks'})
