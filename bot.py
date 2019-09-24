@@ -22,11 +22,12 @@ dp = Dispatcher(vk, gid)
 
 TEXT = {1: 'first задание',
         2: 'second задание',
-        3: 'third задание'}
-USERS = {}  # schema - id: lead, user, agent dict of dicts????????? it is the solution!!!
-TEAMS = {}  # schema - team_id: {всё по тиме и задачкам}
-LEADS = {}  # schema - id: lead_id
-progress = {}  # schema - team_name: something to pass progress on stages
+        3: 'third задание',
+        4: 'fourth задание'}
+USERS = {}  # schema - id: lead, user, agent, lead_choose, user_choose, new
+TEAMS = {}  # schema - team_id: team_name
+LEADS = {}  # schema - id: lead_id=team_id
+MARKS = {}  # schema - team_id: {1:0,2:}
 AGENTS = {}  # schema - id: stage
 ADMINS = {182840420: 'admin'}  # schema - id: status
 
@@ -281,12 +282,12 @@ async def handle_user_choose_team(message: types.Message, data: dict):
         if USERS[int(message.text)] == 'lead':
             LEADS[message.from_id] = message.text
             USERS[message.from_id] = 'user'
-            await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % int(message.text),
+            await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % TEAMS[int(message.text)],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Перепроверь, у капитана точно %s? Если не поможет, пиши в помощь" % message.text)
     else:
-        await message.answer("Перепроверь, у капитана точно %s? Напиши мне точно!" % message.text)
+        await message.answer("Перепроверь, у капитана точно %s? Напиши мне как у него!" % message.text)
 
 
 @dp.message_handler(IsNew(True))  # если клавы не сработают
