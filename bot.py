@@ -22,7 +22,7 @@ dp = Dispatcher(vk, gid)
 
 TEXT = {1: 'Памятник загадан с помощью AR-приложения. Ссылка на его скачивание, если вы не сделали этого заранее: '
            'https://play.google.com/store/apps/details?id=ru.izobretarium.app.spacear',
-        '1a': ['ИСЗ', 'спутник', 'искусственный спутник земли'],
+        '1a': ['исз', 'спутник', 'искусственный спутник земли', 'первый спутник'],
         2: 'Современное наименование предприятие получило в 1994 г. До этого было известно как отдел 3 СКБ НИИ-88, '
            'Особое конструкторское бюро-1 (ОКБ-1), Центральное конструкторское бюро экспериментального машиностроения '
            '(ЦКБЭМ), Научно-производственное объединение (НПО) \"Энергия\".'
@@ -40,8 +40,11 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
            'нового поколения «Ямал-100» (1999-2011), «Ямал-200» (с 2003); спутник дистанционного зондирования Земли '
            '(ДЗЗ) «БелКА» (2006); космическая система ДЗЗ для иностранного заказчика (2014-2015) и др. Предприятие '
            'являлось активным участником международных космических программ: \"Союз-Аполлон\", \"Интеркосмос\".',
-        '2a': [],
-        3: 'third задание',
+        '2a': ['ркк'],
+        3: 'Сыграем в мини-версию игры \"морской бой\"? Формат ввода координат: А1.\n'
+           'На поле находится 3 корабля (1 - Трехпалубный, 2 - Однопалубных). '
+           'Эти корабли дают название места, где находится этап.',
+        '3a': ['к2', "к3", "к4", "м6", 'т9'],
         4: 'fourth задание'}
 
 USERS = {}  # schema - id: lead, user, agent, lead_choose, user_choose, new
@@ -50,6 +53,8 @@ LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
 AGENTS = {}  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
+SEA_WAR = {}  # schema - id_lead: ['точки МБ']
+SEA_WAR_PRINT = {} # schema -
 ADMINS = {182840420: 'admin'}  # schema - id: status
 
 
@@ -311,13 +316,25 @@ async def handle_arg_command(message: types.Message, data: dict):
     await message.answer("Ok.")
 
 
+@dp.message_handler(payload={"command": 'kb_back_to_main'})
+async def handle_off_riddle(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = 'idle'
+    await message.reply("Хорошо",
+                        keyboard=kb_main.get_keyboard())
+
+
 @dp.message_handler(IsSolving(True))  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_solving(message: types.Message, data: dict):
     if PROGRESS[message.from_id] == '1':
-        if message.text in TEXT['1a']:
+        if message.text.lower() in TEXT['1a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            await message.answer("Верно!", keyboard=kb_main.get_keyboard())
+            TEAMS[message.from_id]['1'] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
+                                 "агента - там ещё 10 баллов!", keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
         USERS[message.from_id] = 'lead'
@@ -344,11 +361,7 @@ async def handle_3_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[3], keyboard=kb_back_to_main.get_keyboard())
 
 
-@dp.message_handler(payload={"command": 'back_to_main'})
-async def handle_off_riddle(message: types.Message, data: dict):
-    PROGRESS[message.from_id] = 'idle'
-    await message.reply("Хорошо",
-                        keyboard=kb_main.get_keyboard())
+
 
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
