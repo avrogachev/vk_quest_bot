@@ -44,7 +44,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         3: 'Сыграем в мини-версию игры \"морской бой\"? Формат ввода координат: А1.\n'
            'На поле находится 3 корабля (1 - Трехпалубный, 2 - Однопалубных). '
            'Эти корабли дают название места, где находится этап.',
-        '3a': ['к2', "к3", "к4", "м6", 'т9'],
+        '3a': Set(['к2', "к3", "к4", "м6", 'т9']),
         4: 'fourth задание'}
 
 USERS = {}  # schema - id: lead, user, agent, lead_choose, user_choose, new
@@ -53,8 +53,27 @@ LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
 AGENTS = {}  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
-SEA_WAR = {}  # schema - id_lead: ['точки МБ']
-SEA_WAR_PRINT = {} # schema -
+SEA_WAR = {}  # schema - id_lead: Set(['точки МБ','точки '])
+SEA_WAR_PRINT = {}  # schema - 1: string (below like t0)
+t0 = '\u3000И\u3000К\u3000Л\u3000М\u3000Н\u3000О\u3000П\u3000Р\u3000С\u3000Т\n'
+t1 = '1\n'
+t2 = '2\n'
+t2_solved = '2 \u3000 \U0001F4A5\n'
+t2_killed = '2 \u3000 \U0001F480\n'
+t3 = '3\n'
+t3_solved = '3 \u3000 \U0001F4A5\n'
+t3_killed = '3 \u3000 \U0001F480\n'
+t4 = '4\n'
+t4_solved = '4 \u3000 \U0001F4A5\n'
+t4_killed = '4 \u3000 \U0001F480\n'
+t5 = '5\n'
+t6 = '6\n'
+t6_solved = '6 \u3000\u3000\u3000\u3000\u3000\U0001F480\n'
+t7 = '7\n'
+t8 = '8\n'
+t9 = '9\n'
+t9_solved = '9\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\U0001F480\n'
+t10 = '10'
 ADMINS = {182840420: 'admin'}  # schema - id: status
 
 
@@ -289,7 +308,7 @@ async def handle_help(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'marks'})
 async def handle_marks(message: types.Message, data: dict):
-    await message.reply("Тут будут баллы команды.")
+    await message.reply(table)
 
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
@@ -329,7 +348,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['1a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            TEAMS[message.from_id]['1'] = 5
+            #TEAMS[message.from_id]['1'] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
                                  "агента - там ещё 10 баллов!", keyboard=kb_main.get_keyboard())
         else:
