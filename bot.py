@@ -147,6 +147,26 @@ class IsUser(BaseRule):
             return False
 
 
+class IsAgent(BaseRule):
+    """
+    Проверка статуса агента
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "agent":
+            return True
+        elif not self.is_admin and status == "agent":
+            return False
+        elif self.is_admin and status == "agent":
+            return True
+        elif self.is_admin and status != "agent":
+            return False
+
+
 class IsUserChoose(BaseRule):
     """
     Проверка статуса члена команды
