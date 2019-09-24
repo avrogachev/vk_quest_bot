@@ -49,7 +49,7 @@ TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
 AGENTS = {}  # schema - id: stage
-PROGRESS = {}
+PROGRESS = {}  # schema - id_lead: 1..10 idle
 ADMINS = {182840420: 'admin'}  # schema - id: status
 
 
@@ -145,6 +145,26 @@ class IsLead(BaseRule):
         elif self.is_admin and status == "lead":
             return True
         elif self.is_admin and status != "lead":
+            return False
+
+
+class IsSolving(BaseRule):
+    """
+    Проверка статуса капитана
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "solving":
+            return True
+        elif not self.is_admin and status == "solving":
+            return False
+        elif self.is_admin and status == "solving":
+            return True
+        elif self.is_admin and status != "solving":
             return False
 
 
@@ -251,10 +271,10 @@ async def handle_back_to_start(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'tasks'})
 async def handle_tasks(message: types.Message, data: dict):
     await message.reply('Тут мне нужно собрать табличку вида:'
-                                      '\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
-                                      '(просто числом, например, 2)'
-                                      '\n1. :key:' '8391 :white_check_mark: '
-                                      '\n 2. :x: \n3. :x:')
+                        '\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
+                        '(просто числом, например, 2)'
+                        '\n1. :key:' '8391 :white_check_mark: '
+                        '\n 2. :x: \n3. :x:')
 
 
 @dp.message_handler(payload={"command": 'help'})
@@ -269,8 +289,7 @@ async def handle_marks(message: types.Message, data: dict):
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
-    USERS[message.from_id] = 'user_choose'
-    await message.reply("You now is user_choose! \U0001f600", keyboard=kb_admin.get_keyboard())
+    await message.reply("You now is in admin mode! \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
 @dp.message_handler(rules.Command("teams"), IsAdmin(True))
@@ -292,10 +311,24 @@ async def handle_arg_command(message: types.Message, data: dict):
     await message.answer("Ok.")
 
 
+@dp.message_handler(IsSolving(True))  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_solving(message: types.Message, data: dict):
+    if PROGRESS[message.from_id] == '1':
+        if message.text in TEXT['1a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            await message.answer("Верно!", keyboard=kb_main.get_keyboard())
+    else:
+        PROGRESS[message.from_id] = 'idle'
+        USERS[message.from_id] = 'lead'
+        await message.answer("Что-то не так, вернёмся в главное меню", keyboard=kb_back_to_main.get_keyboard())
+
+
 @dp.message_handler(text="1")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_1_riddle(message: types.Message, data: dict):
     if USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '1'
+        USERS[message.from_id] = 'solving'
         await message.answer(TEXT[1], keyboard=kb_back_to_main.get_keyboard())
     else:
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[1], keyboard=kb_main.get_keyboard())
