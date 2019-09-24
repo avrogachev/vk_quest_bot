@@ -370,6 +370,7 @@ async def handle_arg_command(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'kb_back_to_main'})
 async def handle_off_riddle(message: types.Message, data: dict):
     PROGRESS[message.from_id] = 'idle'
+    USERS[message.from_id] = 'lead'
     await message.reply("Хорошо",
                         keyboard=kb_main.get_keyboard())
 
@@ -435,7 +436,8 @@ async def handle_solving(message: types.Message, data: dict):
                                  keyboard=kb_back_to_main.get_keyboard())
             if SEA_WAR_PRINT[message.from_id] == TEXT['3a']:
                 await message.answer(
-                    "Ты потопил все мои корабли. Теперь отгадай кодовое слово и назови его мне! Это аббревиатура",
+                    "Ты потопил все мои корабли. Теперь отгадай кодовое слово и назови его мне! Это аббревиатура. Если "
+                    "никак не получается, нажми кнопку снизу и зови на помощь",
                     keyboard=kb_back_to_main.get_keyboard())
         else:
             await message.answer("Мимо!", keyboard=kb_back_to_main.get_keyboard())
@@ -455,7 +457,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][5] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение пятого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -466,7 +468,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][6] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение шестого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -477,7 +479,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][7] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение седьмого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -488,7 +490,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][8] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение восьмого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -499,7 +501,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][9] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение девятого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -510,7 +512,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][10] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение десятого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -521,7 +523,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][11] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение одиннадцатого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
@@ -532,7 +534,7 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][12] = 5
-            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+            await message.answer("Верно! Вы получили 5 баллов за верное решение двенадцатого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
                                  keyboard=kb_main.get_keyboard())
         else:
