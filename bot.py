@@ -23,23 +23,7 @@ dp = Dispatcher(vk, gid)
 TEXT = {1: 'Памятник загадан с помощью AR-приложения. Ссылка на его скачивание, если вы не сделали этого заранее: '
            'https://play.google.com/store/apps/details?id=ru.izobretarium.app.spacear',
         '1a': ['исз', 'спутник', 'искусственный спутник земли', 'первый спутник'],
-        2: 'Современное наименование предприятие получило в 1994 г. До этого было известно как отдел 3 СКБ НИИ-88, '
-           'Особое конструкторское бюро-1 (ОКБ-1), Центральное конструкторское бюро экспериментального машиностроения '
-           '(ЦКБЭМ), Научно-производственное объединение (НПО) \"Энергия\".'
-           ' При головной роли предприятия в последующие '
-           'годы созданы: \n орбитальные станции «Салют» (1971); «Салют-4» (1974-1977); «Салют-6» (1977-1982); '
-           '«Салют-7» (1982-1991); многомодульная станция «Мир» (1986-2001), ставшая первым международным '
-           'исследовательским космическим центром, на котором выполнялись проекты "Евромир", "Мир-Шаттл", "Мир-НАСА";'
-           ' Российский сегмент Международной космической станции (с 1998); пилотируемые космические корабли'
-           ' «Союз» (1966-1981), «Союз Т» (1979-1986), «Союз ТМ» (1986-2002), «Союз ТМА» (2002-2012), «Союз ТМА-М» '
-           '(2010-2016), «Союз МC» (с 2016); грузовые космические корабли «Прогресс» (1978-1990), «Прогресс М» '
-           '(1989-2009), «Прогресс М1» (2000-2004), «Прогресс М-М» (2008-2015), «Прогресс МС» (с 2015); многоразовая '
-           'космическая система «Энергия–Буран» с крупнейшей в мире ракетой-носителем «Энергия» (1987), которая до '
-           'настоящего времени не имеет технических аналогов в мире, и многоразовым ОК «Буран» (1988); космическая '
-           'орбитальная обсерватория «Гамма» астрофизического и геофизического направлений (1990-1992); спутники связи '
-           'нового поколения «Ямал-100» (1999-2011), «Ямал-200» (с 2003); спутник дистанционного зондирования Земли '
-           '(ДЗЗ) «БелКА» (2006); космическая система ДЗЗ для иностранного заказчика (2014-2015) и др. Предприятие '
-           'являлось активным участником международных космических программ: \"Союз-Аполлон\", \"Интеркосмос\".',
+        2: 'Тут ещё легенда не готова. Либо тыкай НАЗАД, либо ответ РКК))))',
         '2a': ['ркк'],
         3: 'Сыграем в мини-версию игры \"морской бой\"? Формат ввода координат: А1.\n'
            'На поле находится 3 корабля (1 - Трехпалубный, 2 - Однопалубных). '
@@ -355,6 +339,16 @@ async def handle_solving(message: types.Message, data: dict):
             await message.answer("Нет, попробуй другой ответ. Может, аббревиатуру. Или жми кнопку снизу, позже "
                                  "вернёшься к этой задаче",
                                  keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '2':
+        if message.text.lower() in TEXT['2a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][2] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение второго задания. Бегом искать точку и "
+                                 "решать задание агента - там ещё 10 баллов!", keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer('Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче',
+                                 keyboard=kb_back_to_main.get_keyboard())
     elif PROGRESS[message.from_id] == '3':  # SEA_WAR SEA_WAR_PRINT
         if message.text.lower() == 'кккмт' or message.text.lower() == '3кмт':
             PROGRESS[message.from_id] = 'idle'
@@ -396,7 +390,105 @@ async def handle_solving(message: types.Message, data: dict):
                     "Ты потопил все мои корабли. Теперь отгадай кодовое слово и назови его мне! Это аббревиатура",
                     keyboard=kb_back_to_main.get_keyboard())
         else:
-            await message.answer("Мимо!",
+            await message.answer("Мимо!", keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '4':
+        if message.text.lower() in TEXT['4a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][4] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '5':
+        if message.text.lower() in TEXT['5a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][5] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '6':
+        if message.text.lower() in TEXT['6a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][6] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '7':
+        if message.text.lower() in TEXT['7a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][7] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '8':
+        if message.text.lower() in TEXT['8a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][8] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '9':
+        if message.text.lower() in TEXT['9a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][9] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '10':
+        if message.text.lower() in TEXT['10a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][10] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '11':
+        if message.text.lower() in TEXT['11a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][11] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '12':
+        if message.text.lower() in TEXT['12a']:
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][12] = 5
+            await message.answer("Верно! Вы получили 5 баллов за верное решение четвёртого задания."
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!",
+                                 keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
                                  keyboard=kb_back_to_main.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
@@ -415,7 +507,7 @@ async def handle_1_riddle(message: types.Message, data: dict):
 
 
 @dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
-async def handle_2_riddle(message: types.Message, data: dict):
+async def handle_3_riddle(message: types.Message, data: dict):
     if USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '3'
         USERS[message.from_id] = 'solving'
@@ -430,9 +522,9 @@ async def handle_2_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[3], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
-async def handle_3_riddle(message: types.Message, data: dict):
-    await message.answer(TEXT[3], keyboard=kb_back_to_main.get_keyboard())
+@dp.message_handler(text="2")  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_2_riddle(message: types.Message, data: dict):
+    await message.answer(TEXT[2], keyboard=kb_back_to_main.get_keyboard())
 
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
