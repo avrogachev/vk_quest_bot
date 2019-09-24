@@ -383,7 +383,7 @@ async def handle_solving(message: types.Message, data: dict):
                 SEA_WAR[message.from_id][2] = t2_killed
                 SEA_WAR[message.from_id][3] = t3_killed
                 SEA_WAR[message.from_id][4] = t4_killed
-            await message.answer('Попал!' + SEA_WAR[message.from_id][0] + SEA_WAR[message.from_id][1] +
+            await message.answer('Попал!\n' + SEA_WAR[message.from_id][0] + SEA_WAR[message.from_id][1] +
                                  SEA_WAR[message.from_id][2] + SEA_WAR[message.from_id][3] + SEA_WAR[message.from_id][
                                      4] +
                                  SEA_WAR[message.from_id][5] + SEA_WAR[message.from_id][6] + SEA_WAR[message.from_id][
@@ -394,7 +394,7 @@ async def handle_solving(message: types.Message, data: dict):
             if SEA_WAR_PRINT[message.from_id] == TEXT['3a']:
                 await message.answer(
                     "Ты потопил все мои корабли. Теперь отгадай кодовое слово и назови его мне! Это аббревиатура",
-                    keyboard=kb_main.get_keyboard())
+                    keyboard=kb_back_to_main.get_keyboard())
         else:
             await message.answer("Мимо!",
                                  keyboard=kb_back_to_main.get_keyboard())
@@ -420,6 +420,7 @@ async def handle_2_riddle(message: types.Message, data: dict):
         PROGRESS[message.from_id] = '3'
         USERS[message.from_id] = 'solving'
         SEA_WAR[message.from_id] = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10]
+        SEA_WAR_PRINT[message.from_id] = set()
         await message.answer(TEXT[3] + '\n' + SEA_WAR[message.from_id][0] + SEA_WAR[message.from_id][1] +
                              SEA_WAR[message.from_id][2] + SEA_WAR[message.from_id][3] + SEA_WAR[message.from_id][4] +
                              SEA_WAR[message.from_id][5] + SEA_WAR[message.from_id][6] + SEA_WAR[message.from_id][7] +
