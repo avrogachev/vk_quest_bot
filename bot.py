@@ -24,8 +24,8 @@ TEXT = {1: 'first задание',
         2: 'second задание',
         3: 'third задание'}
 USERS = {}  # schema - id: lead, user, agent dict of dicts????????? it is the solution!!!
-TEAMS = {}  # schema - id: team_id = captain_id
-LEADS = {}
+TEAMS = {}  # schema - team_id: {всё по тиме и задачкам}
+LEADS = {}  # schema - id: lead_id
 progress = {}  # schema - team_name: something to pass progress on stages
 AGENTS = {}  # schema - id: stage
 ADMINS = {182840420: 'admin'}  # schema - id: status
@@ -106,6 +106,26 @@ class IsLeadChoose(BaseRule):
             return False
 
 
+class IsLead(BaseRule):
+    """
+    Проверка статуса капитана
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "lead":
+            return True
+        elif not self.is_admin and status == "lead":
+            return False
+        elif self.is_admin and status == "lead":
+            return True
+        elif self.is_admin and status != "lead":
+            return False
+
+
 class IsUser(BaseRule):
     """
     Проверка статуса капитана
@@ -176,13 +196,13 @@ async def handle_choose_captain(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'kb_choose_participant'})
 async def handle_choose_participant(message: types.Message, data: dict):
     USERS[message.from_id] = "user_choose"
-    await message.reply("Дождись, пока капитан зарегистрируется и скажи мне название твоей команды. "
+    await message.reply("Дождись, пока капитан зарегистрируется и напиши мне код команды - он появится у капитана. "
                         "Если ты капитан, жми кнопку \"Назад\"", keyboard=kb_back_to_start.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'kb_back_to_start'})
 async def handle_back_to_start(message: types.Message, data: dict):
-    USERS[message.from_id] = "user"
+    USERS[message.from_id] = "new"
     await message.reply("В этот раз будь внимательнее:)", keyboard=kb_choose.get_keyboard())
 
 
@@ -248,24 +268,24 @@ async def handle_3_riddle(message: types.Message, data: dict):
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
-    await message.answer("Ура, команда %s зарегистрирована!" % TEAMS[message.from_id], keyboard=kb_main.get_keyboard())
+    LEADS[message.from_id] = message.from_id  # сам себе капитан
+    await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
+                         "пусть напишут мне код \n %s" % (TEAMS[message.from_id], message.from_id),
+                         keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(IsUserChoose(True))  # обработка названий команды
 async def handle_user_choose_team(message: types.Message, data: dict):
-    USERS[message.from_id] = "user"
-    await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
-    #   for ids, names in TEAMS.items():
-    #       if names == message.text:
-    #           USERS[message.from_id] = "user"
-    #           TEAMS[message.from_id] = id
-    #           # поменяли статус на юзер с юзер_чуз. Также надо проассоциировать команду
-    #           await message.answer("Отлично,  %s. Бегом в игру!" % message.text, keyboard=kb_main.get_keyboard())
-    #       else:
-    #           await message.answer("Не вижу такой команды...  как он её записал и попробуй ещё раз.")
+    if USERS[message.text] == 'lead':
+        LEADS[message.from_id] = message.text
+        USERS[message.from_id] = 'user'
+        await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % TEAMS[message.text],
+                             keyboard=kb_main.get_keyboard())
+    else:
+        await message.answer("Перепроверь, у капитана точно %s? Напиши мне точно!" % message.text)
 
 
-@dp.message_handler(IsNew(True))
+@dp.message_handler(IsNew(True))  # если клавы не сработают
 async def get_start_message(message: types.Message, data: dict):
     await message.reply("Привет! Космический рейс в лице бота Афанасия приветствует тебя!\n"
                         "Капитан должен зарегистрировать команду. "
