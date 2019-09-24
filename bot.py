@@ -6,7 +6,7 @@ from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
 from vk.bot_framework import Storage
 import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
-
+#from sets import Set
 
 from config import TOKEN, GROUP_ID  # PLUGINS_PATH #, loop
 from keyboards import *
@@ -44,7 +44,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         3: 'Сыграем в мини-версию игры \"морской бой\"? Формат ввода координат: А1.\n'
            'На поле находится 3 корабля (1 - Трехпалубный, 2 - Однопалубных). '
            'Эти корабли дают название места, где находится этап.',
-        '3a': Set(['к2', "к3", "к4", "м6", 'т9']),
+        '3a': set(['к2', "к3", "к4", "м6", 'т9']),
         4: 'fourth задание'}
 
 USERS = {}  # schema - id: lead, user, agent, lead_choose, user_choose, new
@@ -54,7 +54,7 @@ MARKS = {}  # schema - team_id: {1:0,2:}
 AGENTS = {}  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
 SEA_WAR = {}  # schema - id_lead: Set(['точки МБ','точки '])
-SEA_WAR_PRINT = {}  # schema - 1: string (below like t0)
+SEA_WAR_PRINT = {}  # schema - id_lead: [t0, t1, t2...]
 t0 = '\u3000И\u3000К\u3000Л\u3000М\u3000Н\u3000О\u3000П\u3000Р\u3000С\u3000Т\n'
 t1 = '1\n'
 t2 = '2\n'
@@ -308,7 +308,7 @@ async def handle_help(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'marks'})
 async def handle_marks(message: types.Message, data: dict):
-    await message.reply(table)
+    await message.reply(t0)
 
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
@@ -342,17 +342,61 @@ async def handle_off_riddle(message: types.Message, data: dict):
                         keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(IsSolving(True))  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(IsSolving(True))  # TODO: учёт баллов
 async def handle_solving(message: types.Message, data: dict):
     if PROGRESS[message.from_id] == '1':
         if message.text.lower() in TEXT['1a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            #TEAMS[message.from_id]['1'] = 5
+            MARKS[message.from_id][1] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
                                  "агента - там ещё 10 баллов!", keyboard=kb_main.get_keyboard())
         else:
-            await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
+            await message.answer("Нет, попробуй другой ответ. Может, аббревиатуру. Или жми кнопку снизу, позже "
+                                 "вернёшься к этой задаче",
+                                 keyboard=kb_back_to_main.get_keyboard())
+    elif PROGRESS[message.from_id] == '3':  # SEA_WAR SEA_WAR_PRINT
+        if message.text.lower() == 'кккмт' or message.text.lower() == '3кмт':
+            PROGRESS[message.from_id] = 'idle'
+            USERS[message.from_id] = 'lead'
+            MARKS[message.from_id][3] = 5  # - place in !!! only int
+            await message.answer(
+                "Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
+                "агента - там ещё 10 баллов!", keyboard=kb_main.get_keyboard())
+        elif message.text.lower() in TEXT['3a']:
+            if message.text.lower() == 'к2':  # k2 k3 k4 m6 t9
+                SEA_WAR[message.from_id][2] = t2_solved
+                SEA_WAR_PRINT[message.from_id].add('к2')
+            elif message.text.lower() == 'к3':
+                SEA_WAR[message.from_id][3] = t3_solved
+                SEA_WAR_PRINT[message.from_id].add('к3')
+            elif message.text.lower() == 'к4':
+                SEA_WAR[message.from_id][4] = t4_solved
+                SEA_WAR_PRINT[message.from_id].add('к4')
+            elif message.text.lower() == 'м6':
+                SEA_WAR[message.from_id][6] = t6_solved
+                SEA_WAR_PRINT[message.from_id].add('м6')
+            elif message.text.lower() == 'т9':
+                SEA_WAR_PRINT[message.from_id].add('т9')
+                SEA_WAR[message.from_id][9] = t9_solved
+            if SEA_WAR[message.from_id][2] == t2_solved and SEA_WAR[message.from_id][3] == t3_solved and SEA_WAR[message.from_id][4] == t4_solved:
+                SEA_WAR[message.from_id][2] = t2_killed
+                SEA_WAR[message.from_id][3] = t3_killed
+                SEA_WAR[message.from_id][4] = t4_killed
+            await message.answer('Попал!' + SEA_WAR[message.from_id][0] + SEA_WAR[message.from_id][1] +
+                                 SEA_WAR[message.from_id][2] + SEA_WAR[message.from_id][3] + SEA_WAR[message.from_id][
+                                     4] +
+                                 SEA_WAR[message.from_id][5] + SEA_WAR[message.from_id][6] + SEA_WAR[message.from_id][
+                                     7] +
+                                 SEA_WAR[message.from_id][8] + SEA_WAR[message.from_id][9] + SEA_WAR[message.from_id][
+                                     10],
+                                 keyboard=kb_back_to_main.get_keyboard())
+            if SEA_WAR_PRINT[message.from_id] == TEXT['3a']:
+                await message.answer(
+                    "Ты потопил все мои корабли. Теперь отгадай кодовое слово и назови его мне! Это аббревиатура",
+                    keyboard=kb_main.get_keyboard())
+        else:
+            await message.answer("Мимо!",
                                  keyboard=kb_back_to_main.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
@@ -370,17 +414,24 @@ async def handle_1_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[1], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="2")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_2_riddle(message: types.Message, data: dict):
-    await message.answer(TEXT[2], keyboard=kb_back_to_main.get_keyboard())
+    if USERS[message.from_id] == 'lead':
+        PROGRESS[message.from_id] = '3'
+        USERS[message.from_id] = 'solving'
+        SEA_WAR[message.from_id] = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10]
+        await message.answer(TEXT[3] + '\n' + SEA_WAR[message.from_id][0] + SEA_WAR[message.from_id][1] +
+                             SEA_WAR[message.from_id][2] + SEA_WAR[message.from_id][3] + SEA_WAR[message.from_id][4] +
+                             SEA_WAR[message.from_id][5] + SEA_WAR[message.from_id][6] + SEA_WAR[message.from_id][7] +
+                             SEA_WAR[message.from_id][8] + SEA_WAR[message.from_id][9] + SEA_WAR[message.from_id][10],
+                             keyboard=kb_back_to_main.get_keyboard())
+    else:
+        await message.answer('Принимаю ответы только от капитана!\n' + TEXT[3], keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_3_riddle(message: types.Message, data: dict):
     await message.answer(TEXT[3], keyboard=kb_back_to_main.get_keyboard())
-
-
-
 
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
