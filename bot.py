@@ -347,8 +347,8 @@ async def handle_tasks(message: types.Message, data: dict):
                                                     MARKS[message.from_id][7] + MARKS[message.from_id][8] +
                                                     MARKS[message.from_id][9] + MARKS[message.from_id][10] +
                                                     MARKS[message.from_id][11] + MARKS[message.from_id][12] +
-                                                    MARKS[message.from_id][13], MARKS[message.from_id][1],
-                                                    MARKS[message.from_id][2],
+                                                    MARKS[message.from_id][13],
+                                                    MARKS[message.from_id][1], MARKS[message.from_id][2],
                                                     MARKS[message.from_id][3], MARKS[message.from_id][4],
                                                     MARKS[message.from_id][5], MARKS[message.from_id][6],
                                                     MARKS[message.from_id][7], MARKS[message.from_id][8],
@@ -573,7 +573,12 @@ async def handle_solving(message: types.Message, data: dict):
 
 @dp.message_handler(text="1")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_1_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][1] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][1] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][1], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '1'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[1], keyboard=kb_back_to_main.get_keyboard())
@@ -702,7 +707,7 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
     LEADS[message.from_id] = message.from_id  # сам себе капитан
-    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12:0, 13:0}
+    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0}
     await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
                          "пусть напишут мне этот код: \n%s" % (TEAMS[message.from_id], message.from_id),
                          keyboard=kb_main.get_keyboard())
