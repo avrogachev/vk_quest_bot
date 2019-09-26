@@ -85,7 +85,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:)'}
 
 USERS = {3285497: 'agent',  # Ильина
-         182840420: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
+         1828404200: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
@@ -348,20 +348,20 @@ async def handle_tasks(message: types.Message, data: dict):
                         '11. %d\n'
                         '12. %d\n'
                         '13. Фотозадания: %d из 5\n'
-                        '14. Допзадания' % (MARKS[message.from_id][1] + MARKS[message.from_id][2] +
-                                                    MARKS[message.from_id][3] + MARKS[message.from_id][4] +
-                                                    MARKS[message.from_id][5] + MARKS[message.from_id][6] +
-                                                    MARKS[message.from_id][7] + MARKS[message.from_id][8] +
-                                                    MARKS[message.from_id][9] + MARKS[message.from_id][10] +
-                                                    MARKS[message.from_id][11] + MARKS[message.from_id][12] +
-                                                    MARKS[message.from_id][13],
-                                                    MARKS[message.from_id][1], MARKS[message.from_id][2],
-                                                    MARKS[message.from_id][3], MARKS[message.from_id][4],
-                                                    MARKS[message.from_id][5], MARKS[message.from_id][6],
-                                                    MARKS[message.from_id][7], MARKS[message.from_id][8],
-                                                    MARKS[message.from_id][9], MARKS[message.from_id][10],
-                                                    MARKS[message.from_id][11], MARKS[message.from_id][12],
-                                                    MARKS[message.from_id][13])
+                        '14. Допзадания %d' % (MARKS[LEADS[message.from_id]][1] + MARKS[LEADS[message.from_id]][2] +
+                                               MARKS[LEADS[message.from_id]][3] + MARKS[LEADS[message.from_id]][4] +
+                                               MARKS[LEADS[message.from_id]][5] + MARKS[LEADS[message.from_id]][6] +
+                                               MARKS[LEADS[message.from_id]][7] + MARKS[LEADS[message.from_id]][8] +
+                                               MARKS[LEADS[message.from_id]][9] + MARKS[LEADS[message.from_id]][10] +
+                                               MARKS[LEADS[message.from_id]][11] + MARKS[LEADS[message.from_id]][12] +
+                                               MARKS[LEADS[message.from_id]][13] + MARKS[LEADS[message.from_id]][14],
+                                               MARKS[LEADS[message.from_id]][1], MARKS[LEADS[message.from_id]][2],
+                                               MARKS[LEADS[message.from_id]][3], MARKS[LEADS[message.from_id]][4],
+                                               MARKS[LEADS[message.from_id]][5], MARKS[LEADS[message.from_id]][6],
+                                               MARKS[LEADS[message.from_id]][7], MARKS[LEADS[message.from_id]][8],
+                                               MARKS[LEADS[message.from_id]][9], MARKS[LEADS[message.from_id]][10],
+                                               MARKS[LEADS[message.from_id]][11], MARKS[LEADS[message.from_id]][12],
+                                               MARKS[LEADS[message.from_id]][13], MARKS[LEADS[message.from_id]][14])
                         )
 
 
@@ -389,6 +389,72 @@ async def admin_panel(message: types.Message, data: dict):
 async def admin_add_1(message: types.Message, data: dict):
     PROGRESS[message.from_id] = '1'
     await message.reply("Ща на первый этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='2')
+async def admin_add_2(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '2'
+    await message.reply("Ща на второй этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='3')
+async def admin_add_3(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '3'
+    await message.reply("Ща на третий этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='4')
+async def admin_add_4(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '4'
+    await message.reply("Ща на 4 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='5')
+async def admin_add_5(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '5'
+    await message.reply("Ща на 5 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='6')
+async def admin_add_6(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '6'
+    await message.reply("Ща на 6 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='7')
+async def admin_add_7(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '7'
+    await message.reply("Ща на 7 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='8')
+async def admin_add_8(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '8'
+    await message.reply("Ща на восьмой этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='9')
+async def admin_add_9(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '9'
+    await message.reply("Ща на 9 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='10')
+async def admin_add_10(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '10'
+    await message.reply("Ща на 10 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='11')
+async def admin_add_11(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '11'
+    await message.reply("Ща на 11 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='12')
+async def admin_add_12(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '12'
+    await message.reply("Ща на 12 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
 @dp.message_handler(IsAdmin(True))
@@ -816,10 +882,11 @@ async def handle_14_riddle(message: types.Message, data: dict):
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
-    LEADS[message.from_id] = message.from_id  # сам себе капитан
-    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0}
+    LEADS[message.from_id] = int(message.from_id)  # сам себе капитан
+    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0}
     await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
-                         "пусть напишут мне этот код: \n%s" % (TEAMS[message.from_id], message.from_id),
+                         "пусть нажмут кнопку \"Я участник\" и напишут мне этот код: \n%s" %
+                         (TEAMS[message.from_id], message.from_id),
                          keyboard=kb_main.get_keyboard())
 
 
@@ -827,7 +894,7 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
 async def handle_user_choose_team(message: types.Message, data: dict):
     if int(message.text) in USERS:
         if USERS[int(message.text)] == 'lead':
-            LEADS[message.from_id] = message.text
+            LEADS[message.from_id] = int(message.text)
             USERS[message.from_id] = 'user'
             await message.answer("Отлично, теперь вы член команды %s. Бегом в игру!" % TEAMS[int(message.text)],
                                  keyboard=kb_main.get_keyboard())
