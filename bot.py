@@ -6,7 +6,6 @@ from vk.utils import TaskManager
 from vk.bot_framework import Dispatcher
 from vk.bot_framework import Storage
 import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
-#from sets import Set
 
 from config import TOKEN, GROUP_ID  # PLUGINS_PATH #, loop
 from keyboards import *
@@ -84,12 +83,12 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         13: 'Описание фотозаданий нужно',
         14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:)'}
 
-USERS = {3285497: 'agent',  # Ильина
+USERS = {1596791: 'new_agent',  # Ильина
          1828404200: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
-AGENTS = {3285497: '1'  # Ильина
+AGENTS = {15967910: '1'  # Ильина
           }  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
 SEA_WAR = {}  # schema - id_lead: Set(['точки МБ','точки '])
@@ -167,6 +166,26 @@ class IsNew(BaseRule):
         elif self.is_admin and status == "new":
             return True
         elif self.is_admin and status != "new":
+            return False
+
+
+class IsNewAgent(BaseRule):
+    """
+    Check admin rights of user.
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "new_agent":
+            return True
+        elif not self.is_admin and status == "new_agent":
+            return False
+        elif self.is_admin and status == "new_agent":
+            return True
+        elif self.is_admin and status != "new_agent":
             return False
 
 
@@ -270,6 +289,46 @@ class IsAgent(BaseRule):
             return False
 
 
+class IsAgentChoose(BaseRule):
+    """
+    Проверка статуса агента
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "agent_choose":
+            return True
+        elif not self.is_admin and status == "agent_choose":
+            return False
+        elif self.is_admin and status == "agent_choose":
+            return True
+        elif self.is_admin and status != "agent_choose":
+            return False
+
+
+class IsAgentMark(BaseRule):
+    """
+    Проверка статуса агента
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "agent_mark":
+            return True
+        elif not self.is_admin and status == "agent_mark":
+            return False
+        elif self.is_admin and status == "agent_mark":
+            return True
+        elif self.is_admin and status != "agent_mark":
+            return False
+
+
 class IsUserChoose(BaseRule):
     """
     Проверка статуса члена команды
@@ -292,6 +351,71 @@ class IsUserChoose(BaseRule):
 
 storage = Storage()
 dp.storage = storage
+
+
+@dp.message_handler(IsNewAgent(True))
+async def handle_new_agent(message: types.Message, data: dict):
+    if message.from_id in AGENTS:
+        USERS[message.from_id] = 'agent'
+        await message.reply("Приветствую, агент! У тебя уже указан %s этап. По кнопке Список команд - команды, "
+                            "получившие хоть какие-то баллы за этот этап. Если там 5 баллов, они отгадали загадку и "
+                            "идут к тебе. Если загадку не отгадали - смело шли их отгадывать и не приходить, пока не "
+                            "отгадают. Если надо поменять этап или что-то не так, жми копку ПОМОЩЬ, я приду" %
+                            AGENTS[message.from_id],
+                            keyboard=kb_agent.get_keyboard())
+    else:
+        USERS[message.from_id] = 'agent_choose'
+        await message.reply('Приветствую, агент! Пришли мне цифру своего этапа, у меня не написано, где ты стоишь',
+                            keyboard=kb_agent.get_keyboard())
+
+
+@dp.message_handler(IsAgentChoose(True))
+async def handle_agent_choose(message: types.Message, data: dict):
+    USERS[message.from_id] = 'agent'
+    AGENTS[message.from_id] = message.text
+    await message.reply("Приветствую, агент! Теперь у тебя указан %s этап. По кнопке Список команд - команды, "
+                        "получившие хоть какие-то баллы за этот этап. Если там 5 баллов, они отгадали загадку и "
+                        "идут к тебе. Если загадку не отгадали - смело шли их отгадывать и не приходить, пока не "
+                        "отгадают. Если надо поменять этап или что-то не так, жми копку ПОМОЩЬ, я приду" %
+                        AGENTS[message.from_id],
+                        keyboard=kb_agent.get_keyboard())
+
+
+@dp.message_handler(payload={"command": 'agent_back'})  # агент послал команду и не стал оценивать
+async def handle_agent_mark_back(message: types.Message, data: dict):
+    USERS[message.from_id] = 'agent'
+    PROGRESS[message.from_id] = 'idle'
+    await message.answer("Хорошо, оценим позже", keyboard=kb_agent.get_keyboard())
+
+
+@dp.message_handler(IsAgentMark(True))
+async def handle_agent_mark(message: types.Message, data: dict):
+    MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])] = 5 + int(message.text)
+    USERS[message.from_id] = 'agent'
+    PROGRESS[message.from_id] = 'idle'
+    await message.answer("У команды %s за этот этап в сумме %d "
+                         "баллов!" % (TEAMS[PROGRESS[message.from_id]],
+                                      MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])]),
+                         keyboard=kb_agent.get_keyboard())
+
+
+@dp.message_handler(IsAgent(True))
+async def handle_agent_mark_id(message: types.Message, data: dict):
+    if int(message.text) in LEAD.values():
+        if MARKS[int(message.text)] == 0:
+            await message.answer("Эти ребята ещё не решили загадку. Пусть подумают, решат, а потом можно им проводить "
+                                 "этап.", keyboard=kb_agent.get_keyboard())
+        elif MARKS[int(message.text)] != 0:
+            USERS[message.from_id] = 'agent_mark'
+            PROGRESS[message.from_id] = int(message.text)
+            await message.answer("Всё верно, вижу команду %s, сколько баллов? Если ошибёшься, не беда - "
+                                 "баллы можно поставить опять и они перепишут старые" % TEAMS[int(message.text)],
+                                 keyboard=kb_agent_back.get_keyboard())
+        else:
+            await message.answer("Какой-то косяк, пиши в помощь" % message.text)
+    else:
+        await message.answer("Перепроверь, код команды точно %s? Напиши мне как у него! Если что, в чате капитана "
+                             "команды вбей id и у него вылезут точные цифры" % message.text)
 
 
 @dp.message_handler(payload={"command": 'start'})
@@ -370,14 +494,9 @@ async def handle_help(message: types.Message, data: dict):
     await message.reply("Сейчас с вами свяжется агент из штаба, боту грустно, что он непонятный:(")
 
 
-
 @dp.message_handler(text='id')
 async def id(message: types.Message, data: dict):
     await message.reply("%s" % message.from_id)
-
-#@dp.message_handler(payload={"command": 'marks'})
-#async def handle_marks(message: types.Message, data: dict):
-#    await message.reply(t0)
 
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
@@ -462,12 +581,12 @@ async def admin_assign_agent(message: types.Message, data: dict):
     if PROGRESS[message.from_id] == '1':
         PROGRESS[message.from_id] = 'idle'
         AGENTS[int(message.text)] = '1'
-        USERS[int(message.text)] = 'agent'
+        USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 1 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '2':
         PROGRESS[message.from_id] = 'idle'
         AGENTS[int(message.text)] = '2'
-        USERS[int(message.text)] = 'agent'
+        USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 2 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
@@ -723,7 +842,7 @@ async def handle_3_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[3], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="4")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="4")
 async def handle_4_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][4] == 5:
         await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
@@ -738,7 +857,7 @@ async def handle_4_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[4], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="5")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="5")
 async def handle_5_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][5] == 5:
         await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
@@ -858,7 +977,7 @@ async def handle_12_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[12], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="13")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="13")
 async def handle_13_riddle(message: types.Message, data: dict):
     if USERS[message.from_id] == 'lead':
         # PROGRESS[message.from_id] = '13'
@@ -868,7 +987,7 @@ async def handle_13_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[13], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="14")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="14")
 async def handle_14_riddle(message: types.Message, data: dict):
     if USERS[message.from_id] == 'lead':
         # PROGRESS[message.from_id] = '14'
@@ -878,7 +997,7 @@ async def handle_14_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[14], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
+@dp.message_handler(IsLeadChoose(True))  # обработка названий команды.
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     USERS[message.from_id] = "lead"
     TEAMS[message.from_id] = message.text
