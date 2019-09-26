@@ -24,12 +24,12 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
            'https://play.google.com/store/apps/details?id=ru.izobretarium.app.spacear',
         '1a': ['исз', 'спутник', 'искусственный спутник земли', 'первый спутник'],
         2: 'Тут ещё легенда не готова. Либо тыкай НАЗАД, либо ответ РКК))))',
-        '2a': ['ркк'],
+        '2a': ['ркк', 'ркк энергия', 'энергия'],
         3: 'Сыграем в мини-версию игры \"морской бой\"? Формат ввода координат: А1.\n'
            'На поле находится 3 корабля (1 - Трехпалубный, 2 - Однопалубных). '
            'Эти корабли дают название места, где находится этап.',
         '3a': set(['к2', "к3", "к4", "м6", 'т9']),
-        4: 'Как будет загадан этап: так же что и у лунодрома. Либо жмии НАЗАД, либо ответ ПУСК',
+        4: 'Четвёртый этап там же, где и третий - и баллов за нахождение этапа у нас не будет. Если понятно, напиши мне ',
         '4a': ['пуск'],
         5: 'Только представьте, а что если бы можно было перенестись в прошлое и стать свидетелями диалога этих двух '
            'выдающихся людей? Вот сидят они в сквере, который позже будет носить громкий титул одного из них, '
@@ -53,10 +53,13 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         '7a': ['3', 'три'],
         8: 'На главном проспекте города, на участке от 3 до 5 дома, ходит специальный человек. Найдите его, выполните '
            'его небольшое задание и он укажет место этапа. ',
-        '8a': ['загс'],
+        '8a': ['ракета'],
+        '8u': 'Правильно! Агенты находятся у памятника Исаеву. Вам засчитано 5 баллов за нахождение этапа. Кодовое слово агентам “Тормоз”.'
+              'Но не торопитесь уходить уходить - если вы найдёте невесту и сделаете с ней командное фото, вы получите'
+              ' 3 дополнительных балла за фото с невестой.',   # TODO: захуячить допбаллы за секретные задания
         9: 'Профессор, доктор технических наук. Умер в Калининграде в 1980 году. В городе стоит его детище с 100 '
            'размером, агенты ждут там. Ответом будет индекс ГАУ загаданного объекта в формате: **-*-***.',
-        '9a': ['52-П-412'],
+        '9a': ['52-п-412'],
         10: 'Это задание для вас подготовил космонавт А.А. Иванов. Чтобы узнать вопрос, перейдите по ссылке на видео: '
             'ссылка',
         '10a': ['ссылка'],
@@ -77,36 +80,39 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
             '8. Разработчик “Лапоток”.\n'
             '9. В честь него названы сквер и улица возле главного градообразующего предприятия.\n'
             '10. Невелик и не мал для "Газпрома".',
-        '12a': ['флуктуация']}
+        '12a': ['флуктуация'],
+        13: 'Описание фотозаданий нужно',
+        14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:)'}
 
-USERS = {}  # schema - id: lead, user, agent, lead_choose, user_choose, new
+USERS = {3285497: 'agent',  # Ильина
+         182840420: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
-AGENTS = {}  # schema - id: stage
+AGENTS = {3285497: '1'  # Ильина
+          }  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
 SEA_WAR = {}  # schema - id_lead: Set(['точки МБ','точки '])
 SEA_WAR_PRINT = {}  # schema - id_lead: [t0, t1, t2...]
-t0 = '\u3000И\u3000К\u3000Л\u3000М\u3000Н\u3000О\u3000П\u3000Р\u3000С\u3000Т\n'
+t0 = '\u3000К\u3000Л\u3000М\u3000Н\u3000О\u3000П\u3000Р\u3000С\u3000Т\n'
 t1 = '1\n'
 t2 = '2\n'
-t2_solved = '2 \u3000 \U0001F4A5\n'
-t2_killed = '2 \u3000 \U0001F480\n'
+t2_solved = '2 \U0001F4A5\n'
+t2_killed = '2 \U0001F480\n'
 t3 = '3\n'
-t3_solved = '3 \u3000 \U0001F4A5\n'
-t3_killed = '3 \u3000 \U0001F480\n'
+t3_solved = '3 \U0001F4A5\n'
+t3_killed = '3 \U0001F480\n'
 t4 = '4\n'
-t4_solved = '4 \u3000 \U0001F4A5\n'
-t4_killed = '4 \u3000 \U0001F480\n'
+t4_solved = '4 \U0001F4A5\n'
+t4_killed = '4 \U0001F480\n'
 t5 = '5\n'
 t6 = '6\n'
-t6_solved = '6 \u3000\u3000\u3000\u3000\u3000\U0001F480\n'
+t6_solved = '6 \u3000 \u3000\u3000\U0001F480\n'
 t7 = '7\n'
 t8 = '8\n'
 t9 = '9\n'
-t9_solved = '9\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\U0001F480\n'
-t10 = '10'
-ADMINS = {182840420: 'admin'}  # schema - id: status
+t9_solved = '9\u3000 \u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\U0001F480\n'
+t10 = ''
 
 
 class RegistrationMiddleware(BaseMiddleware):
@@ -133,7 +139,7 @@ class IsAdmin(BaseRule):
         self.is_admin: bool = is_admin
 
     async def check(self, message: types.Message, data: dict):
-        status = ADMINS[message.from_id]
+        status = USERS[message.from_id]
         if not self.is_admin and status != "admin":
             return True
         elif not self.is_admin and status == "admin":
@@ -341,7 +347,8 @@ async def handle_tasks(message: types.Message, data: dict):
                         '10. %d\n'
                         '11. %d\n'
                         '12. %d\n'
-                        'Фотозадания: %d из 5\n' % (MARKS[message.from_id][1] + MARKS[message.from_id][2] +
+                        '13. Фотозадания: %d из 5\n'
+                        '14. Допзадания' % (MARKS[message.from_id][1] + MARKS[message.from_id][2] +
                                                     MARKS[message.from_id][3] + MARKS[message.from_id][4] +
                                                     MARKS[message.from_id][5] + MARKS[message.from_id][6] +
                                                     MARKS[message.from_id][7] + MARKS[message.from_id][8] +
@@ -363,6 +370,11 @@ async def handle_help(message: types.Message, data: dict):
     await message.reply("Сейчас с вами свяжется агент из штаба, боту грустно, что он непонятный:(")
 
 
+
+@dp.message_handler(text='id')
+async def id(message: types.Message, data: dict):
+    await message.reply("%s" % message.from_id)
+
 #@dp.message_handler(payload={"command": 'marks'})
 #async def handle_marks(message: types.Message, data: dict):
 #    await message.reply(t0)
@@ -371,6 +383,29 @@ async def handle_help(message: types.Message, data: dict):
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
     await message.reply("You now is in admin mode! \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='1')
+async def admin_add_1(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '1'
+    await message.reply("Ща на первый этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True))
+async def admin_assign_agent(message: types.Message, data: dict):
+    if PROGRESS[message.from_id] == '1':
+        PROGRESS[message.from_id] = 'idle'
+        AGENTS[int(message.text)] = '1'
+        USERS[int(message.text)] = 'agent'
+        await message.reply("Окей, %s теперь агент 1 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
+    elif PROGRESS[message.from_id] == '2':
+        PROGRESS[message.from_id] = 'idle'
+        AGENTS[int(message.text)] = '2'
+        USERS[int(message.text)] = 'agent'
+        await message.reply("Окей, %s теперь агент 2 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
+    else:
+        PROGRESS[message.from_id] = 'idle'
+        await message.reply("скидываю прогресс на айдл \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
 
 
 @dp.message_handler(rules.Command("teams"), IsAdmin(True))
@@ -571,7 +606,7 @@ async def handle_solving(message: types.Message, data: dict):
         await message.answer("Что-то не так, вернёмся в главное меню", keyboard=kb_back_to_main.get_keyboard())
 
 
-@dp.message_handler(text="1")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="1")
 async def handle_1_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][1] == 5:
         await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
@@ -586,9 +621,14 @@ async def handle_1_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[1], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="2")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="2")
 async def handle_2_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][2] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][2] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][2], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '2'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[2], keyboard=kb_back_to_main.get_keyboard())
@@ -598,7 +638,12 @@ async def handle_2_riddle(message: types.Message, data: dict):
 
 @dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_3_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][3] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][3] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][3], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '3'
         USERS[message.from_id] = 'solving'
         SEA_WAR[message.from_id] = [t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10]
@@ -614,7 +659,12 @@ async def handle_3_riddle(message: types.Message, data: dict):
 
 @dp.message_handler(text="4")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_4_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][4] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][4] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][4], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '4'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[4], keyboard=kb_back_to_main.get_keyboard())
@@ -624,7 +674,12 @@ async def handle_4_riddle(message: types.Message, data: dict):
 
 @dp.message_handler(text="5")  # TODO: проверка чёпочём решили ли загадку и что там
 async def handle_5_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][5] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][5] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][5], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '5'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[5], keyboard=kb_back_to_main.get_keyboard())
@@ -632,9 +687,14 @@ async def handle_5_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[5], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="6")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="6")
 async def handle_6_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][6] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][6] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][6], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '6'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[6], keyboard=kb_back_to_main.get_keyboard())
@@ -642,9 +702,14 @@ async def handle_6_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[6], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="7")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="7")
 async def handle_7_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][7] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][7] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][7], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '7'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[7], keyboard=kb_back_to_main.get_keyboard())
@@ -652,9 +717,14 @@ async def handle_7_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[7], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="8")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="8")
 async def handle_8_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][8] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][8] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][8], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '8'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[8], keyboard=kb_back_to_main.get_keyboard())
@@ -662,9 +732,14 @@ async def handle_8_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[8], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="9")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="9")
 async def handle_9_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][9] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][9] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][9], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '9'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[9], keyboard=kb_back_to_main.get_keyboard())
@@ -672,9 +747,14 @@ async def handle_9_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[9], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="10")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="10")
 async def handle_10_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][10] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][10] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][10], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '10'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[10], keyboard=kb_back_to_main.get_keyboard())
@@ -682,8 +762,13 @@ async def handle_10_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[10], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="11")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="11")
 async def handle_11_riddle(message: types.Message, data: dict):
+    if MARKS[LEADS[message.from_id]][11] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][11] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][11], keyboard=kb_main.get_keyboard())
     if USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '11'
         USERS[message.from_id] = 'solving'
@@ -692,14 +777,39 @@ async def handle_11_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[11], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="12")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="12")
 async def handle_12_riddle(message: types.Message, data: dict):
-    if USERS[message.from_id] == 'lead':
+    if MARKS[LEADS[message.from_id]][12] == 5:
+        await message.answer("Вы уже отгадали эту загадку, ищите агента", keyboard=kb_main.get_keyboard())
+    elif MARKS[LEADS[message.from_id]][12] > 5:
+        await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
+                             MARKS[LEADS[message.from_id]][12], keyboard=kb_main.get_keyboard())
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '12'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[12], keyboard=kb_back_to_main.get_keyboard())
     else:
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[12], keyboard=kb_main.get_keyboard())
+
+
+@dp.message_handler(text="13")  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_13_riddle(message: types.Message, data: dict):
+    if USERS[message.from_id] == 'lead':
+        # PROGRESS[message.from_id] = '13'
+        # USERS[message.from_id] = 'solving'
+        await message.answer(TEXT[13], keyboard=kb_main.get_keyboard())
+    else:
+        await message.answer('Принимаю ответы только от капитана!\n' + TEXT[13], keyboard=kb_main.get_keyboard())
+
+
+@dp.message_handler(text="14")  # TODO: проверка чёпочём решили ли загадку и что там
+async def handle_14_riddle(message: types.Message, data: dict):
+    if USERS[message.from_id] == 'lead':
+        # PROGRESS[message.from_id] = '14'
+        # USERS[message.from_id] = 'solving'
+        await message.answer(TEXT[14], keyboard=kb_main.get_keyboard())
+    else:
+        await message.answer('Принимаю ответы только от капитана!\n' + TEXT[14], keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды. TODO: машина состояний
