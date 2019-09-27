@@ -902,17 +902,11 @@ async def handle_3_riddle(message: types.Message, data: dict):
 
 @dp.message_handler(text="4")
 async def handle_4_riddle(message: types.Message, data: dict):
-    if MARKS[LEADS[message.from_id]][4] == 5:
-        await message.answer(TEXT['4s'], keyboard=kb_main.get_keyboard())
-    elif MARKS[LEADS[message.from_id]][4] > 5:
+    if MARKS[LEADS[message.from_id]][4] != 0:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][4], keyboard=kb_main.get_keyboard())
-    elif USERS[message.from_id] == 'lead':
-        PROGRESS[message.from_id] = '4'
-        USERS[message.from_id] = 'solving'
-        await message.answer(TEXT[4], keyboard=kb_back_to_main.get_keyboard())
     else:
-        await message.answer('Принимаю ответы только от капитана!\n' + TEXT[4], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT[4], keyboard=kb_main.get_keyboard())
 
 
 @dp.message_handler(text="5")
