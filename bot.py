@@ -827,7 +827,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][11] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение одиннадцатого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['11s'],
+                                 " Надо искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['11s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
