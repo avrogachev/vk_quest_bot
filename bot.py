@@ -472,7 +472,7 @@ async def handle_back_to_start(message: types.Message, data: dict):
 async def handle_tasks(message: types.Message, data: dict):
     await message.reply('\n Чтобы решить загадку и увидеть её целиком, пришли мне её номер '
                         '(просто числом, например, 2)\nКогда загадка будет решена, по номеру загадки будет выдаваться '
-                        'место, куда надо идти'
+                        'место, куда надо идти\n'
                         'Ваши баллы в сумме: %d \n'
                         '1. %d\n'
                         '2. %d\n'
@@ -697,7 +697,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][1] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
-                                 "агента - там ещё 10 баллов!" + TEXT['1s'], keyboard=kb_main.get_keyboard())
+                                 "агента - там ещё 10 баллов! " + TEXT['1s'], keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Может, аббревиатуру. Или жми кнопку снизу, позже "
                                  "вернёшься к этой задаче",
@@ -708,7 +708,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][2] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение второго задания. Бегом искать точку и "
-                                 "решать задание агента - там ещё 10 баллов!" + TEXT['2s'], keyboard=kb_main.get_keyboard())
+                                 "решать задание агента - там ещё 10 баллов! " + TEXT['2s'], keyboard=kb_main.get_keyboard())
         else:
             await message.answer('Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче',
                                  keyboard=kb_back_to_main.get_keyboard())
@@ -719,7 +719,7 @@ async def handle_solving(message: types.Message, data: dict):
             MARKS[message.from_id][3] = 5  # - place in !!! only int
             await message.answer(
                 "Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
-                "агента - там ещё 10 баллов!" + TEXT['3s'], keyboard=kb_main.get_keyboard())
+                "агента - там ещё 10 баллов! " + TEXT['3s'], keyboard=kb_main.get_keyboard())
         elif message.text.lower() in TEXT['3a']:
             if message.text.lower() == 'к2':  # k2 k3 k4 m6 t9
                 SEA_WAR[message.from_id][2] = t2_solved
@@ -761,7 +761,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][5] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение пятого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['5s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['5s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -772,7 +772,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][6] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение шестого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['6s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['6s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -783,7 +783,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][7] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение седьмого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['7s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['7s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -794,7 +794,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][8] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение восьмого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['8s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['8s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -805,7 +805,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][9] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение девятого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['9s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['9s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -816,7 +816,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][10] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение десятого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['10s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['10s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -827,7 +827,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][11] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение одиннадцатого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['11s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['11s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -838,7 +838,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[message.from_id][12] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение двенадцатого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов!" + TEXT['12s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['12s'],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
