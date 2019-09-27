@@ -84,7 +84,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:)'}
 
 USERS = {1596791: 'new_agent',  # Ильина
-         1828404200: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
+         182840420: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
