@@ -392,7 +392,7 @@ async def handle_agent_mark_back(message: types.Message, data: dict):
 async def handle_agent_mark(message: types.Message, data: dict):
     MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])] = 5 + int(message.text)
     USERS[message.from_id] = 'agent'
-    PROGRESS[message.from_id] = 'idle'
+    # PROGRESS[message.from_id] = 'idle'
     await message.answer("У команды %s за этот этап в сумме %d "
                          "баллов!" % (TEAMS[PROGRESS[message.from_id]],
                                       MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])]),
@@ -401,12 +401,12 @@ async def handle_agent_mark(message: types.Message, data: dict):
 
 @dp.message_handler(IsAgent(True))
 async def handle_agent_mark_id(message: types.Message, data: dict):
-    if int(message.text) in LEAD.values():
-        if MARKS[int(message.text)] == 0:
+    if int(message.text) in LEADS.values():
+        if MARKS[int(message.text)][int(AGENTS[message.from_id])] == 0:
             await message.answer("Эти ребята ещё не решили загадку. Пусть подумают, решат, а потом можно им проводить "
                                  "этап.", keyboard=kb_agent.get_keyboard())
-        elif MARKS[int(message.text)] != 0:
-            USERS[message.from_id] = 'agent_mark'
+        elif MARKS[int(message.text)][int(AGENTS[message.from_id])] != 0:
+            USERS[message.from_id] = "agent_mark"
             PROGRESS[message.from_id] = int(message.text)
             await message.answer("Всё верно, вижу команду %s, сколько баллов? Если ошибёшься, не беда - "
                                  "баллы можно поставить опять и они перепишут старые" % TEAMS[int(message.text)],
@@ -415,7 +415,7 @@ async def handle_agent_mark_id(message: types.Message, data: dict):
             await message.answer("Какой-то косяк, пиши в помощь" % message.text)
     else:
         await message.answer("Перепроверь, код команды точно %s? Напиши мне как у него! Если что, в чате капитана "
-                             "команды вбей id и у него вылезут точные цифры" % message.text)
+                             "команды вбей id и у него вылезут точные цифры" % message.text,keyboard=kb_agent.get_keyboard())
 
 
 @dp.message_handler(payload={"command": 'start'})
