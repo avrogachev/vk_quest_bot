@@ -83,8 +83,8 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         13: 'Описание фотозаданий нужно',
         14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:)'}
 
-USERS = {1596791: 'new_agent',  # Ильина
-         182840420: 'admin'}  # schema - id: lead, user, agent, lead_choose, user_choose, new
+USERS = {1596791: 'new_agent'  # Ильина
+         }  # schema - id: lead, user, agent, lead_choose, user_choose, new
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
@@ -112,7 +112,7 @@ t8 = '8\n'
 t9 = '9\n'
 t9_solved = '9\u3000 \u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\U0001F480\n'
 t10 = ''
-
+ADMINS = {182840420: 'admin'}
 
 class RegistrationMiddleware(BaseMiddleware):
     """
@@ -501,7 +501,11 @@ async def id(message: types.Message, data: dict):
 
 @dp.message_handler(rules.Command("admin"), IsAdmin(True))
 async def admin_panel(message: types.Message, data: dict):
-    await message.reply("You now is in admin mode! \U0001f600", keyboard=kb_admin.get_keyboard())
+    if message.from_id in ADMINS.keys():
+        USERS[message.from_id] = 'admin'
+        await message.reply("You now is in admin mode! \U0001f600", keyboard=kb_admin.get_keyboard())
+    else:
+        await message.reply("ADmin access is closed! \U0001f600")
 
 
 @dp.message_handler(IsAdmin(True), text='1')
