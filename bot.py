@@ -1,4 +1,5 @@
 import logging
+import random
 from vk import types
 from vk.bot_framework import BaseRule, BaseMiddleware, rules
 from vk import VK
@@ -18,6 +19,12 @@ task_manager = TaskManager(vk.loop)
 api = vk.get_api()
 
 dp = Dispatcher(vk, gid)
+
+team_id = [i for i in range(100, 1000)]
+random.shuffle(team_id)
+c = 0
+
+# dp.storage.place("counter", counter)
 
 TEXT = {1: 'Памятник загадан с помощью AR-приложения. Ссылка на его скачивание, если вы не сделали этого заранее: '
            'https://play.google.com/store/apps/details?id=ru.izobretarium.app.spacear \nНайдите это место в городе,'
@@ -63,7 +70,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
            'его небольшое задание и он укажет место этапа. ',
         '8a': ['ракета'],
         '8s': 'Агенты находятся у памятника Исаеву. '
-              'Но не торопитесь уходить уходить - если вы найдёте невесту и сделаете с ней командное фото, вы получите'
+              'Но не торопитесь уходить - если вы найдёте невесту и сделаете с ней командное фото, вы получите'
               ' 3 дополнительных балла за фото с невестой.',   # TODO: захуячить допбаллы за секретные задания
         9: 'Профессор, доктор технических наук. Умер в Калининграде в 1980 году. В городе стоит его детище с 100 '
            'размером, агенты ждут там. Ответом будет индекс ГАУ загаданного объекта в формате: **-*-***.',
@@ -98,11 +105,11 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:)'}
 
 USERS = {1596791: 'new_agent'  # Ильина
-         }  # schema - id: lead, user, agent, lead_choose, user_choose, new
+         }  # schema - id: lead, user, agent, lead_choose, user_choose, new, ...
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
 MARKS = {}  # schema - team_id: {1:0,2:}
-AGENTS = {15967910: '1'  # Ильина
+AGENTS = {1596791: '1'  # Ильина
           }  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
 SEA_WAR = {}  # schema - id_lead: Set(['точки МБ','точки '])
@@ -127,6 +134,7 @@ t9 = '9\n'
 t9_solved = '9\u3000 \u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\U0001F480\n'
 t10 = ''
 ADMINS = {182840420: 'admin'}
+
 
 class RegistrationMiddleware(BaseMiddleware):
     """
@@ -695,7 +703,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['1a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][1] = 5
+            MARKS[LEADS[message.from_id]][1] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
                                  "агента - там ещё 10 баллов! " + TEXT['1s'], keyboard=kb_main.get_keyboard())
         else:
@@ -706,7 +714,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['2a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][2] = 5
+            MARKS[LEADS[message.from_id]][2] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение второго задания. Бегом искать точку и "
                                  "решать задание агента - там ещё 10 баллов! " + TEXT['2s'], keyboard=kb_main.get_keyboard())
         else:
@@ -716,7 +724,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() == 'кккмт' or message.text.lower() == '3кмт':
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][3] = 5  # - place in !!! only int
+            MARKS[LEADS[message.from_id]][3] = 5  # - place in !!! only int
             await message.answer(
                 "Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
                 "агента - там ещё 10 баллов! " + TEXT['3s'], keyboard=kb_main.get_keyboard())
@@ -759,7 +767,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['5a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][5] = 5
+            MARKS[LEADS[message.from_id]][5] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение пятого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['5s'],
                                  keyboard=kb_main.get_keyboard())
@@ -770,7 +778,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['6a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][6] = 5
+            MARKS[LEADS[message.from_id]][6] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение шестого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['6s'],
                                  keyboard=kb_main.get_keyboard())
@@ -781,7 +789,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['7a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][7] = 5
+            MARKS[LEADS[message.from_id]][7] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение седьмого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['7s'],
                                  keyboard=kb_main.get_keyboard())
@@ -792,7 +800,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['8a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][8] = 5
+            MARKS[LEADS[message.from_id]][8] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение восьмого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['8s'],
                                  keyboard=kb_main.get_keyboard())
@@ -803,7 +811,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['9a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][9] = 5
+            MARKS[LEADS[message.from_id]][9] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение девятого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['9s'],
                                  keyboard=kb_main.get_keyboard())
@@ -814,7 +822,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['10a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][10] = 5
+            MARKS[LEADS[message.from_id]][10] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение десятого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['10s'],
                                  keyboard=kb_main.get_keyboard())
@@ -825,7 +833,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['11a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][11] = 5
+            MARKS[LEADS[message.from_id]][11] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение одиннадцатого задания."
                                  " Надо искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['11s'],
                                  keyboard=kb_main.get_keyboard())
@@ -836,7 +844,7 @@ async def handle_solving(message: types.Message, data: dict):
         if message.text.lower() in TEXT['12a']:
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
-            MARKS[message.from_id][12] = 5
+            MARKS[LEADS[message.from_id]][12] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение двенадцатого задания."
                                  " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['12s'],
                                  keyboard=kb_main.get_keyboard())
@@ -879,7 +887,7 @@ async def handle_2_riddle(message: types.Message, data: dict):
         await message.answer('Принимаю ответы только от капитана!\n' + TEXT[2], keyboard=kb_main.get_keyboard())
 
 
-@dp.message_handler(text="3")  # TODO: проверка чёпочём решили ли загадку и что там
+@dp.message_handler(text="3")
 async def handle_3_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][3] == 5:
         await message.answer(TEXT['3s'], keyboard=kb_main.get_keyboard())
@@ -1051,14 +1059,16 @@ async def handle_14_riddle(message: types.Message, data: dict):
 
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды.
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
+    global c
     USERS[message.from_id] = "lead"
-    TEAMS[message.from_id] = message.text
-    LEADS[message.from_id] = int(message.from_id)  # сам себе капитан
-    MARKS[message.from_id] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0}
+    TEAMS[team_id[c]] = message.text
+    LEADS[message.from_id] = team_id[c]  # сам себе капитан
+    MARKS[team_id[c]] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0}
     await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
                          "пусть нажмут кнопку \"Я участник\" и напишут мне этот код: \n%s" %
-                         (TEAMS[message.from_id], message.from_id),
+                         (TEAMS[team_id[c]], team_id[c]),
                          keyboard=kb_main.get_keyboard())
+    c = c + 1
 
 
 @dp.message_handler(IsUserChoose(True))  # обработка названий команды
