@@ -301,7 +301,7 @@ class IsAgent(BaseRule):
             return True
         elif self.is_admin and status != "agent":
             return False
-Принимаю ответы только от капитана!\n' +
+
 
 class IsAgentChoose(BaseRule):
     """
