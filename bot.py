@@ -446,7 +446,7 @@ async def handle_agent_mark_id(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'start'})
 async def handle_start(message: types.Message, data: dict):
     await message.reply("Космический рейс в лице бота Афанасия приветствует тебя!\n"
-                        "Капитан должен зарегистрировать команду. "
+                        "Капитан должен зарегистрировать команду.  Для этого жми кнопку \"Я капитан\" "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
                         keyboard=kb_choose.get_keyboard())
 
@@ -454,7 +454,7 @@ async def handle_start(message: types.Message, data: dict):
 @dp.message_handler(rules.Command("init"))
 async def handle_start_another(message: types.Message, data: dict):
     await message.reply("Здравствуй! Космический рейс в лице бота Афанасия приветствует тебя!\n"
-                        "Капитан должен зарегистрировать команду. "
+                        "Капитан должен зарегистрировать команду.  Для этого жми кнопку \"Я капитан\" "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
                         keyboard=kb_choose.get_keyboard())
 
@@ -708,7 +708,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][1] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
-                                 "агента - там ещё 10 баллов! " + TEXT['1s'], keyboard=kb_main.get_keyboard())
+                                 "агента - там ещё 10 баллов! " + TEXT['1s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Может, аббревиатуру. Или жми кнопку снизу, позже "
                                  "вернёшься к этой задаче",
@@ -719,7 +719,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][2] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение второго задания. Бегом искать точку и "
-                                 "решать задание агента - там ещё 10 баллов! " + TEXT['2s'], keyboard=kb_main.get_keyboard())
+                                 "решать задание агента - там ещё 10 баллов! " + TEXT['2s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
         else:
             await message.answer('Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче',
                                  keyboard=kb_back_to_main.get_keyboard())
@@ -772,7 +772,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][5] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение пятого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['5s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['5s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -783,7 +783,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][6] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение шестого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['6s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['6s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -794,7 +794,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][7] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение седьмого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['7s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['7s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -805,7 +805,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][8] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение восьмого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['8s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['8s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -816,7 +816,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][9] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение девятого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['9s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['9s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -827,7 +827,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][10] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение десятого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['10s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['10s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -838,7 +838,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][11] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение одиннадцатого задания."
-                                 " Надо искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['11s'],
+                                 " Надо искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['11s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -849,7 +849,7 @@ async def handle_solving(message: types.Message, data: dict):
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][12] = 5
             await message.answer("Верно! Вы получили 5 баллов за верное решение двенадцатого задания."
-                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['12s'],
+                                 " Бегом искать точку и решать задание агента - там ещё 10 баллов! " + TEXT['12s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id],
                                  keyboard=kb_main.get_keyboard())
         else:
             await message.answer("Нет, попробуй другой ответ. Или жми кнопку снизу, позже вернёшься к этой задаче",
@@ -863,7 +863,7 @@ async def handle_solving(message: types.Message, data: dict):
 @dp.message_handler(text="1")
 async def handle_1_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][1] == 5:
-        await message.answer(TEXT['1s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['1s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][1] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][1], keyboard=kb_main.get_keyboard())
@@ -878,7 +878,7 @@ async def handle_1_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="2")
 async def handle_2_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][2] == 5:
-        await message.answer(TEXT['2s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['2s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][2] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][2], keyboard=kb_main.get_keyboard())
@@ -893,7 +893,7 @@ async def handle_2_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="3")
 async def handle_3_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][3] == 5:
-        await message.answer(TEXT['3s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['3s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][3] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][3], keyboard=kb_main.get_keyboard())
@@ -923,7 +923,7 @@ async def handle_4_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="5")
 async def handle_5_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][5] == 5:
-        await message.answer(TEXT['5s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['5s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][5] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][5], keyboard=kb_main.get_keyboard())
@@ -938,7 +938,7 @@ async def handle_5_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="6")
 async def handle_6_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][6] == 5:
-        await message.answer(TEXT['6s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['6s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][6] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][6], keyboard=kb_main.get_keyboard())
@@ -953,7 +953,7 @@ async def handle_6_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="7")
 async def handle_7_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][7] == 5:
-        await message.answer(TEXT['7s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['7s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][7] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][7], keyboard=kb_main.get_keyboard())
@@ -968,7 +968,7 @@ async def handle_7_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="8")
 async def handle_8_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][8] == 5:
-        await message.answer(TEXT['8s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['8s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][8] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][8], keyboard=kb_main.get_keyboard())
@@ -983,7 +983,7 @@ async def handle_8_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="9")
 async def handle_9_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][9] == 5:
-        await message.answer(TEXT['9s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['9s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][9] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][9], keyboard=kb_main.get_keyboard())
@@ -998,7 +998,7 @@ async def handle_9_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="10")
 async def handle_10_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][10] == 5:
-        await message.answer(TEXT['10s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['10s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][10] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][10], keyboard=kb_main.get_keyboard())
@@ -1013,7 +1013,7 @@ async def handle_10_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="11")
 async def handle_11_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][11] == 5:
-        await message.answer(TEXT['11s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['11s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][11] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][11], keyboard=kb_main.get_keyboard())
@@ -1028,7 +1028,7 @@ async def handle_11_riddle(message: types.Message, data: dict):
 @dp.message_handler(text="12")
 async def handle_12_riddle(message: types.Message, data: dict):
     if MARKS[LEADS[message.from_id]][12] == 5:
-        await message.answer(TEXT['12s'], keyboard=kb_main.get_keyboard())
+        await message.answer(TEXT['12s'] + ' Скажи агенту номер своей команды - %s' % LEADS[message.from_id], keyboard=kb_main.get_keyboard())
     elif MARKS[LEADS[message.from_id]][12] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][12], keyboard=kb_main.get_keyboard())
@@ -1088,7 +1088,7 @@ async def handle_user_choose_team(message: types.Message, data: dict):
 @dp.message_handler(IsNew(True))  # если клавы не сработают
 async def get_start_message(message: types.Message, data: dict):
     await message.reply("Привет! Космический рейс в лице бота Афанасия приветствует тебя!\n"
-                        "Капитан должен зарегистрировать команду. "
+                        "Капитан должен зарегистрировать команду. Для этого жми кнопку \"Я капитан\" "
                         "Как только он закончит, присоединяйтесь к нему и бегом в игру!",
                         keyboard=kb_choose.get_keyboard())
 
