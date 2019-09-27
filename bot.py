@@ -1006,7 +1006,7 @@ async def handle_11_riddle(message: types.Message, data: dict):
     elif MARKS[LEADS[message.from_id]][11] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][11], keyboard=kb_main.get_keyboard())
-    if USERS[message.from_id] == 'lead':
+    elif USERS[message.from_id] == 'lead':
         PROGRESS[message.from_id] = '11'
         USERS[message.from_id] = 'solving'
         await message.answer(TEXT[11], keyboard=kb_back_to_main.get_keyboard())
