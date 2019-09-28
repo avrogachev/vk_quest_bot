@@ -49,7 +49,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
            'выдающихся людей? Вот сидят они в сквере, который позже будет носить громкий титул одного из них, '
            'и ведут неспешную беседу: «Как приятно вот так сесть и поговорить по душам, а, Юр?». Агентов не трогать! '
            'Ответом будет желтое изображение на фасаде здания у этапа в формате: “******”',
-        '5a': ['звезды', 'звезда'],
+        '5a': ['звезды', 'звезда', 'звёзды'],
         '5s': 'Агенты ждут в холле “ИПК Машприбор”. ',
         6: 'Я очень люблю путешествия, ведь так прекрасно сесть поздно вечером и просто понаблюдать: \n'
            '1. В Ташкенте я смотрел на Волосы Вероники, Деву, Льва, потом на Деву, Насос, снова на Деву и Волка.\n'
@@ -59,7 +59,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
            '5. В Катманду я смотрел на Корму, Зайца, Сетку, Резец, Голубя и Корму.\n'
            '6. В Сиднее я смотрел на Кита, Треугольник, Лисичку и Орла.\n'
            '7. В Мумбаи я смотрел на Чашу, Весы, Волка и  Насос.\n'
-           'Пришли мне агаданное слово в формате: *******',
+           'Пришли мне загаданное слово в формате: *******',
         '6a': ['коллапс'],
         '6s': 'Этап находится в беседке (Ротонда) “Луна”, что в центральном парке. ',
         7: 'Все любят получать подарки на память, и участники нашего квеста не исключение. На одном из предметов, '
@@ -73,7 +73,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         '8s': 'Агенты находятся у памятника Исаеву. '
               'Но не торопитесь уходить - если вы найдёте невесту и сделаете с ней командное фото, вы получите'
               ' 3 дополнительных балла за фото с невестой. Чтобы агенты в штабе оценили фото, пусть капитан пришлёт'
-              ' мне фото с хештегом #невеста ',   # TODO: захуячить допбаллы за секретные задания
+              ' мне фото с хештегом #невеcта ',   # TODO: захуячить допбаллы за секретные задания
         9: 'Профессор, доктор технических наук. Умер в Калининграде в 1980 году. В городе стоит его детище с 100 '
            'размером, агенты ждут там. Ответом будет индекс ГАУ загаданного объекта в формате: **-*-***. ',
         '9a': ['52-п-412'],
@@ -107,7 +107,7 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         13: 'В районе проведения квеста есть 5 фото-табличек (мемориальных досок).'
             ' Фото команды (минимум 3 участника) на фоне таблички - '
             '1 балл. Будьте внимательны - вполне возможно, что таблички попадутся вам по основному маршруту. '
-            'Чтобы агенты в штабе оценили фото, пусть капитан пришлёт мне фото с хештегом #фото ',
+            'Чтобы агенты в штабе оценили фото, пусть капитан пришлёт мне фото с хештегом #фoто ',
         14: 'Если быть пытливыми, то можно получить пару дополнительных заданий и набрать ещё немного баллов:) '}
 
 USERS = {1596791: 'new_agent',  # Ильина
@@ -210,7 +210,11 @@ t8 = '8\n'
 t9 = '9\n'
 t9_solved = '9\u3000 \u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\u3000\U0001F480\n'
 t10 = ''
-ADMINS = {182840420: 'admin'}
+ADMINS = {182840420: 'admin',
+          1596791: 'admin',
+          2788171: 'admin',
+          2752197: 'admin'
+          }
 
 
 class RegistrationMiddleware(BaseMiddleware):
@@ -245,6 +249,26 @@ class IsAdmin(BaseRule):
         elif self.is_admin and status == "admin":
             return True
         elif self.is_admin and status != "admin":
+            return False
+
+
+class IsGameStop(BaseRule):
+    """
+    Check admin rights of user.
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "stop":
+            return True
+        elif not self.is_admin and status == "stop":
+            return False
+        elif self.is_admin and status == "stop":
+            return True
+        elif self.is_admin and status != "stop":
             return False
 
 
@@ -448,6 +472,26 @@ class IsUserChoose(BaseRule):
             return False
 
 
+class IsLeagueChoose(BaseRule):
+    """
+    Проверка статуса члена команды
+    """
+
+    def __init__(self, is_admin: bool):
+        self.is_admin: bool = is_admin
+
+    async def check(self, message: types.Message, data: dict):
+        status = USERS[message.from_id]
+        if not self.is_admin and status != "league":
+            return True
+        elif not self.is_admin and status == "league":
+            return False
+        elif self.is_admin and status == "league":
+            return True
+        elif self.is_admin and status != "league":
+            return False
+
+
 storage = Storage()
 dp.storage = storage
 
@@ -455,6 +499,7 @@ dp.storage = storage
 @dp.message_handler(payload={"command": 'kb_school'})  # агент послал команду и не стал оценивать
 async def handle_school_league(message: types.Message, data: dict):
     LEAGUE[LEADS[message.from_id]] = 1
+    USERS[message.from_id] = 'lead'
     await message.answer("Хорошо, это школьная лига.\n"
                          "Попробуй нажать кнопки снизу - и вообще почаще проверяй свои баллы\n"
                          "Если хочешь сразу ворваться отгадывать загадки, напиши мне 1 или 2 или даже 14\n"
@@ -465,6 +510,7 @@ async def handle_school_league(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'kb_junior'})  # агент послал команду и не стал оценивать
 async def handle_junior_league(message: types.Message, data: dict):
     LEAGUE[LEADS[message.from_id]] = 2
+    USERS[message.from_id] = 'lead'
     await message.answer("Хорошо, это молодёжная лига.\n"
                          "Попробуй нажать кнопки снизу - и вообще почаще проверяй свои баллы\n"
                          "Если хочешь сразу ворваться отгадывать загадки, напиши мне 1 или 2 или даже 14\n"
@@ -475,11 +521,64 @@ async def handle_junior_league(message: types.Message, data: dict):
 @dp.message_handler(payload={"command": 'kb_zavod'})  # агент послал команду и не стал оценивать
 async def handle_zavod_league(message: types.Message, data: dict):
     LEAGUE[LEADS[message.from_id]] = 3
+    USERS[message.from_id] = 'lead'
     await message.answer("Рад видеть команду от предприятия!\n"
                          "Попробуй нажать кнопки снизу - и вообще почаще проверяй свои баллы\n"
                          "Если хочешь сразу ворваться отгадывать загадки, напиши мне 1 или 2 или даже 14\n"
                          "Космической игры!"
                          , keyboard=kb_main.get_keyboard())
+
+
+@dp.message_handler(IsLeagueChoose(True))
+async def handle_league_choose_must(message: types.Message, data: dict):
+    await message.reply('Лигу нужно обязательно выбрать! Используй клавиатуру снизу. Если клавиатура скрылась - '
+                        'найди справа снизу значок четырёх точек в квадратике (около смайлика) и нажми на него. '
+                        'Не поможет - выйди и зайди в приложение ВК. ',keyboard = kb_league.get_keyboard())
+
+
+@dp.message_handler(IsGameStop(True))
+async def handle_game_stop_true(message: types.Message, data: dict):
+    await message.reply('\nИГРА ОКОНЧЕНА, ИДИТЕ В ДК КАЛИНИНА НА НАГРАЖДЕНИЕ\n'
+                        '%s, вы огромные молодцы!\n'
+                        'Ваши баллы в сумме: %d \n'
+                        '1. Вперёд! На Марс! %d баллов\n'
+                        '2. Первые в космосе. %d баллов\n'
+                        '3. Взлетно-посадочный комплекс. %d баллов\n'
+                        '4. Ракетный двигатель. %d баллов\n'
+                        '5. СоюзVSПрогресс. %d баллов\n'
+                        '6. Психологическая помощь. %d баллов\n'
+                        '7. СОЖ. %d баллов\n'
+                        '8. Авария на МКС. %d баллов\n'
+                        '9. Военный космос. %d баллов\n'
+                        '10. Станция будущего. %d баллов\n'
+                        '11. ГИРД. %d баллов\n'
+                        '12. Водитель лунохода. %d баллов\n'
+                        '13. Фотозадания: %d из 5 возможных баллов\n'
+                        '14. Допзадания: %d баллов\n'
+                        'Штраф за подсказки (за одну подсказку - 5 баллов) %d' % (TEAMS[LEADS[message.from_id]],
+                                               MARKS[LEADS[message.from_id]][1] + MARKS[LEADS[message.from_id]][2] +
+                                               MARKS[LEADS[message.from_id]][3] + MARKS[LEADS[message.from_id]][4] +
+                                               MARKS[LEADS[message.from_id]][5] + MARKS[LEADS[message.from_id]][6] +
+                                               MARKS[LEADS[message.from_id]][7] + MARKS[LEADS[message.from_id]][8] +
+                                               MARKS[LEADS[message.from_id]][9] + MARKS[LEADS[message.from_id]][10] +
+                                               MARKS[LEADS[message.from_id]][11] + MARKS[LEADS[message.from_id]][12] +
+                                               MARKS[LEADS[message.from_id]][13] + MARKS[LEADS[message.from_id]][14] + MARKS[LEADS[message.from_id]][15],
+                                               MARKS[LEADS[message.from_id]][1], MARKS[LEADS[message.from_id]][2],
+                                               MARKS[LEADS[message.from_id]][3], MARKS[LEADS[message.from_id]][4],
+                                               MARKS[LEADS[message.from_id]][5], MARKS[LEADS[message.from_id]][6],
+                                               MARKS[LEADS[message.from_id]][7], MARKS[LEADS[message.from_id]][8],
+                                               MARKS[LEADS[message.from_id]][9], MARKS[LEADS[message.from_id]][10],
+                                               MARKS[LEADS[message.from_id]][11], MARKS[LEADS[message.from_id]][12],
+                                               MARKS[LEADS[message.from_id]][13], MARKS[LEADS[message.from_id]][14], MARKS[LEADS[message.from_id]][15])
+                        )
+
+
+@dp.message_handler(IsAdmin(True), text='GAME STOP')
+async def admin_admin_game_stop(message: types.Message, data: dict):
+    for p in USERS.keys():
+        if USERS[p] in ['new', 'lead_choose', 'lead', 'solving', 'user', 'user_choose']:
+            USERS[p] = 'stop'
+    await message.reply("ИГРА ОКОНЧЕНА \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
 @dp.message_handler(IsNewAgent(True))
@@ -497,7 +596,7 @@ async def handle_new_agent(message: types.Message, data: dict):
                             '3. Взлетно-посадочный комплекс.\n'
                             '4. Ракетный двигатель.\n'
                             '5. СоюзVSПрогресс.\n'
-                            '6. Психологическая совместимость.\n'
+                            '6. Психологическая помощь.\n'
                             '7. СОЖ.\n'
                             '8. Авария на МКС.\n'
                             '9. Военный космос.\n'
@@ -528,7 +627,7 @@ async def handle_agent_choose(message: types.Message, data: dict):
                             '3. Взлетно-посадочный комплекс.\n'
                             '4. Ракетный двигатель.\n'
                             '5. СоюзVSПрогресс.\n'
-                            '6. Психологическая совместимость.\n'
+                            '6. Психологическая помощь.\n'
                             '7. СОЖ.\n'
                             '8. Авария на МКС.\n'
                             '9. Военный космос.\n'
@@ -564,14 +663,47 @@ async def handle_agent_mark_back(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'teams_agent'})  # агент послал команду и не стал оценивать
 async def handle_agent_team_list(message: types.Message, data: dict):
-    sq = 'Список команд, получивших баллы за ваш этап (5 дают за разгадку загаки):\n'
+    sq = 'Список команд, получивших баллы за ваш этап (5 дают за разгадку загадки):\n'
     unique_team_ids = set(LEADS.values())
     # unique_team_ids = set( val for dic in LEADS for val in dic.values())
     for t in unique_team_ids:
-        if MARKS[int(t)][AGENTS[message.from_id]] > 0:
+        if MARKS[int(t)][AGENTS[message.from_id]] != 0:
             k = '%d %s: %d баллов\n' % (t, TEAMS[t], MARKS[int(t)][AGENTS[message.from_id]])
             sq = sq + k
     await message.answer(sq, keyboard=kb_agent.get_keyboard())
+
+
+@dp.message_handler(payload={"command": 'teams_admin'})  # агент послал команду и не стал оценивать
+async def handle_admin_teams(message: types.Message, data: dict):
+    school = 'ШКОЛЬНЫЕ команды\n'
+    junior = 'МОЛОДЁЖНЫЕ команды\n'
+    zavod = 'ПРЕДПРИЯТИЯ\n'
+    unique_team_ids = set(LEADS.values())
+    # unique_team_ids = set( val for dic in LEADS for val in dic.values())
+    for t in unique_team_ids:
+        if LEAGUE[int(t)] == 1:  # school
+            total = 0
+            for ele in range(1, len(MARKS[int(t)])+1):
+                total = total + MARKS[int(t)][ele]
+            k = '%d %s: %d баллов\n' % (t, TEAMS[t], total)
+            school = school + k
+        elif LEAGUE[int(t)] == 2:  # junior
+            total = 0
+            for ele in range(1, len(MARKS[int(t)])+1):
+                total = total + MARKS[int(t)][ele]
+            k = '%d %s: %d баллов\n' % (t, TEAMS[t], total)
+            junior = junior + k
+        elif LEAGUE[int(t)] == 2:  # zavod
+            total = 0
+            for ele in range(1, len(MARKS[int(t)])+1):
+                total = total + MARKS[int(t)][ele]
+            k = '%d %s: %d баллов\n' % (t, TEAMS[t], total)
+            zavod = zavod + k
+    await message.answer(school + junior + zavod, keyboard=kb_admin.get_keyboard())
+
+
+##kb_admin.add_text_button('Список команд', payload={"command": 'teams_admin'})
+#kb_admin.add_text_button('Баллы команд', payload={"command": 'marks_admin'})
 
 
 #>>> lis = [{"abc":"movies"}, {"abc": "sports"}, {"abc": "music"}, {"xyz": "music"}, {"pqr":"music"}, {"pqr":"movies"},{"pqr":"sports"}, {"pqr":"news"}, {"pqr":"sports"}]
@@ -582,7 +714,10 @@ async def handle_agent_team_list(message: types.Message, data: dict):
 
 @dp.message_handler(IsAgentMark(True))
 async def handle_agent_mark(message: types.Message, data: dict):
-    MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])] = 5 + int(message.text)
+    if int(AGENTS[message.from_id]) in [13, 14, 15]:
+        MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])] = int(message.text)
+    else:
+        MARKS[PROGRESS[message.from_id]][int(AGENTS[message.from_id])] = 5 + int(message.text)
     USERS[message.from_id] = 'agent'
     # PROGRESS[message.from_id] = 'idle'
     await message.answer("У команды %s за этот этап в сумме %d "
@@ -594,7 +729,15 @@ async def handle_agent_mark(message: types.Message, data: dict):
 @dp.message_handler(IsAgent(True))
 async def handle_agent_mark_id(message: types.Message, data: dict):
     if int(message.text) in LEADS.values():
-        if MARKS[int(message.text)][int(AGENTS[message.from_id])] == 0:
+        if int(AGENTS[message.from_id]) in [13, 14, 15]:
+            USERS[message.from_id] = "agent_mark"
+            PROGRESS[message.from_id] = int(message.text)
+            await message.answer("Всё верно, вижу команду %s, у них сейчас %d, сколько баллов должно быть в итоге?"
+                                 " Если ошибёшься, не беда - "
+                                 "баллы можно поставить опять и они перепишут старые" % (TEAMS[int(message.text)],
+                                                                                         MARKS[int(message.text)][int(AGENTS[message.from_id])]),
+                                 keyboard=kb_agent_back.get_keyboard())
+        elif MARKS[int(message.text)][int(AGENTS[message.from_id])] == 0:
             await message.answer("Эти ребята ещё не решили загадку. Пусть подумают, решат, а потом можно им проводить "
                                  "этап.", keyboard=kb_agent.get_keyboard())
         elif MARKS[int(message.text)][int(AGENTS[message.from_id])] != 0:
@@ -658,7 +801,7 @@ async def handle_tasks(message: types.Message, data: dict):
                         '3. Взлетно-посадочный комплекс. %d баллов\n'
                         '4. Ракетный двигатель. %d баллов\n'
                         '5. СоюзVSПрогресс. %d баллов\n'
-                        '6. Психологическая совместимость. %d баллов\n'
+                        '6. Психологическая помощь. %d баллов\n'
                         '7. СОЖ. %d баллов\n'
                         '8. Авария на МКС. %d баллов\n'
                         '9. Военный космос. %d баллов\n'
@@ -666,28 +809,45 @@ async def handle_tasks(message: types.Message, data: dict):
                         '11. ГИРД. %d баллов\n'
                         '12. Водитель лунохода. %d баллов\n'
                         '13. Фотозадания: %d из 5 возможных баллов\n'
-                        '14. Допзадания %d баллов' % (TEAMS[LEADS[message.from_id]],
-                                               MARKS[LEADS[message.from_id]][1] + MARKS[LEADS[message.from_id]][2] +
-                                               MARKS[LEADS[message.from_id]][3] + MARKS[LEADS[message.from_id]][4] +
-                                               MARKS[LEADS[message.from_id]][5] + MARKS[LEADS[message.from_id]][6] +
-                                               MARKS[LEADS[message.from_id]][7] + MARKS[LEADS[message.from_id]][8] +
-                                               MARKS[LEADS[message.from_id]][9] + MARKS[LEADS[message.from_id]][10] +
-                                               MARKS[LEADS[message.from_id]][11] + MARKS[LEADS[message.from_id]][12] +
-                                               MARKS[LEADS[message.from_id]][13] + MARKS[LEADS[message.from_id]][14],
-                                               MARKS[LEADS[message.from_id]][1], MARKS[LEADS[message.from_id]][2],
-                                               MARKS[LEADS[message.from_id]][3], MARKS[LEADS[message.from_id]][4],
-                                               MARKS[LEADS[message.from_id]][5], MARKS[LEADS[message.from_id]][6],
-                                               MARKS[LEADS[message.from_id]][7], MARKS[LEADS[message.from_id]][8],
-                                               MARKS[LEADS[message.from_id]][9], MARKS[LEADS[message.from_id]][10],
-                                               MARKS[LEADS[message.from_id]][11], MARKS[LEADS[message.from_id]][12],
-                                               MARKS[LEADS[message.from_id]][13], MARKS[LEADS[message.from_id]][14])
+                        '14. Допзадания: %d баллов\n'
+                        'Штраф за подсказки (за одну подсказку - 5 баллов) %d' % (TEAMS[LEADS[message.from_id]],
+                                                                                  MARKS[LEADS[message.from_id]][1] +
+                                                                                  MARKS[LEADS[message.from_id]][2] +
+                                                                                  MARKS[LEADS[message.from_id]][3] +
+                                                                                  MARKS[LEADS[message.from_id]][4] +
+                                                                                  MARKS[LEADS[message.from_id]][5] +
+                                                                                  MARKS[LEADS[message.from_id]][6] +
+                                                                                  MARKS[LEADS[message.from_id]][7] +
+                                                                                  MARKS[LEADS[message.from_id]][8] +
+                                                                                  MARKS[LEADS[message.from_id]][9] +
+                                                                                  MARKS[LEADS[message.from_id]][10] +
+                                                                                  MARKS[LEADS[message.from_id]][11] +
+                                                                                  MARKS[LEADS[message.from_id]][12] +
+                                                                                  MARKS[LEADS[message.from_id]][13] +
+                                                                                  MARKS[LEADS[message.from_id]][14] +
+                                                                                  MARKS[LEADS[message.from_id]][15],
+                                                                                  MARKS[LEADS[message.from_id]][1],
+                                                                                  MARKS[LEADS[message.from_id]][2],
+                                                                                  MARKS[LEADS[message.from_id]][3],
+                                                                                  MARKS[LEADS[message.from_id]][4],
+                                                                                  MARKS[LEADS[message.from_id]][5],
+                                                                                  MARKS[LEADS[message.from_id]][6],
+                                                                                  MARKS[LEADS[message.from_id]][7],
+                                                                                  MARKS[LEADS[message.from_id]][8],
+                                                                                  MARKS[LEADS[message.from_id]][9],
+                                                                                  MARKS[LEADS[message.from_id]][10],
+                                                                                  MARKS[LEADS[message.from_id]][11],
+                                                                                  MARKS[LEADS[message.from_id]][12],
+                                                                                  MARKS[LEADS[message.from_id]][13],
+                                                                                  MARKS[LEADS[message.from_id]][14],
+                                                                                  MARKS[LEADS[message.from_id]][15])
                         )
 
 
 @dp.message_handler(payload={"command": 'help'})
 async def handle_help(message: types.Message, data: dict):
     await message.reply("Что может пойти не так и как с этим жить.\nРабота с ботом завязан на клавиатуру с кнопками "
-                        "(Я капитан/Я участник/Задания и баллы и все эти кнопки), а она иногда"
+                        "(Я капитан/Я участник/Задания и баллы), а она иногда"
                         "предательски скрывается. Чаще всего нужно закрыть клавиатуру набора текста и нажать на "
                         "квадратную штуку с "
                         "четыремя точками снизу справа, около смайликов - это кнопка скрытия/показа клавиатуры."
@@ -796,11 +956,16 @@ async def admin_add_14(message: types.Message, data: dict):
     await message.reply("Ща на 14 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
+@dp.message_handler(IsAdmin(True), text='15')
+async def admin_add_15(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '15'
+    await message.reply("Ща на штрафы агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
 @dp.message_handler(IsAdmin(True), text='admin')
-async def admin_add_14(message: types.Message, data: dict):
+async def admin_add_admin(message: types.Message, data: dict):
     PROGRESS[message.from_id] = 'admin'
     await message.reply("Ща на admin этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
-
 
 
 @dp.message_handler(IsAdmin(True))
@@ -879,6 +1044,11 @@ async def admin_assign_agent(message: types.Message, data: dict):
         PROGRESS[message.from_id] = 'idle'
         USERS[int(message.text)] = 'admin'
         await message.reply("Окей, %s теперь админ \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
+    elif PROGRESS[message.from_id] == '15':
+        PROGRESS[message.from_id] = 'idle'
+        AGENTS[int(message.text)] = 15
+        USERS[int(message.text)] = 'new_agent'
+        await message.reply("Окей, %s теперь штрафует \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
         await message.reply("скидываю прогресс на айдл \U0001f600", keyboard=kb_admin.get_keyboard())
@@ -1126,7 +1296,7 @@ async def handle_3_riddle(message: types.Message, data: dict):
 
 @dp.message_handler(text="4")
 async def handle_4_riddle(message: types.Message, data: dict):
-    if MARKS[LEADS[message.from_id]][4] != 0:
+    if MARKS[LEADS[message.from_id]][4] > 5:
         await message.answer("Ба, да у вас целых %d баллов за эту задачку, решайте другие!" %
                              MARKS[LEADS[message.from_id]][4], keyboard=kb_main.get_keyboard())
     else:
@@ -1276,10 +1446,10 @@ async def handle_14_riddle(message: types.Message, data: dict):
 @dp.message_handler(IsLeadChoose(True))  # обработка названий команды.
 async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     global c
-    USERS[message.from_id] = "lead"
+    USERS[message.from_id] = "league"
     TEAMS[team_id[c]] = message.text
     LEADS[message.from_id] = team_id[c]  # сам себе капитан
-    MARKS[team_id[c]] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0}
+    MARKS[team_id[c]] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0, 15: 0}
     await message.answer("Ура, команда %s зарегистрирована!\n Осталось указать лигу и регистрация окончена. "
                          "Чтобы члены твоей команды смогли к тебе присоединиться, "
                          "пусть нажмут кнопку \"Я участник\" и напишут мне этот код: \n%s" %

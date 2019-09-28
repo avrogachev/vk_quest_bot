@@ -41,5 +41,5 @@ kb_agent_back.add_text_button('Не буду пока оценивать эту 
 
 kb_admin = Keyboard(one_time=False)
 kb_admin.add_text_button('Список команд', payload={"command": 'teams_admin'})
-kb_admin.add_text_button('Баллы команд', payload={"command": 'marks_admin'})
+#kb_admin.add_text_button('Баллы команд', payload={"command": 'marks_admin'})
 # kb_admin.add_text_button('Помощь', payload={"command": 'help'})
