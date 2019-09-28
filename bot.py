@@ -80,8 +80,9 @@ TEXT = {1: 'Памятник загадан с помощью AR-приложе�
         '9s': 'Идите к пушке Грабина, агенты ждут! ',
         10: 'Привет из Музея Космонавтики! Чтобы узнать вопрос, перейдите по ссылке на видео: '
             'https://youtu.be/P2AYyusBhQg\n'
-            'Пришли мне ответ на вопрос космонавта в формате: “*****_*_********_******”. ',
-        '10a': ['выход в открытый космос'],
+            'Пришли мне ответ на вопрос космонавта в формате: “*****_*_********_******” (в немного другом формате '
+            'ответ тоже приму - люди называют эту операцию немного по-разному)',
+        '10a': ['выход в открытый космос', 'выход в космос', 'шлюзование'],
         '10s': 'Агенты ждут в Коворкинге по адресу: ул. Грабина, 2Б. ',
         11: 'У вас есть уникальная возможность выиграть в нашей лотерее. Сотрите защитный слой билета, который '
             'находится в конверте, и отправляйтесь к агентам. Ответом будет название загаданного места в формате: '
@@ -799,74 +800,78 @@ async def admin_add_14(message: types.Message, data: dict):
 async def admin_assign_agent(message: types.Message, data: dict):
     if PROGRESS[message.from_id] == '1':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '1'
+        AGENTS[int(message.text)] = 1
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 1 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '2':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '2'
+        AGENTS[int(message.text)] = 2
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 2 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '3':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '3'
+        AGENTS[int(message.text)] = 3
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 3 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '4':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '4'
+        AGENTS[int(message.text)] = 4
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 4 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '5':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '5'
+        AGENTS[int(message.text)] = 5
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 5 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '6':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '6'
+        AGENTS[int(message.text)] = 6
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 6 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '7':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '7'
+        AGENTS[int(message.text)] = 7
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 7 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '8':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '8'
+        AGENTS[int(message.text)] = 8
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 8 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '9':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '9'
+        AGENTS[int(message.text)] = 9
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 9 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '10':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '10'
+        AGENTS[int(message.text)] = 10
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 10 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '11':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '11'
+        AGENTS[int(message.text)] = 11
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 11 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '12':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '12'
+        AGENTS[int(message.text)] = 12
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 12 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '13':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '12'
+        AGENTS[int(message.text)] = 13
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 13 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     elif PROGRESS[message.from_id] == '14':
         PROGRESS[message.from_id] = 'idle'
-        AGENTS[int(message.text)] = '12'
+        AGENTS[int(message.text)] = 14
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 14 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
+    elif PROGRESS[message.from_id] == 'admin':
+        PROGRESS[message.from_id] = 'idle'
+        USERS[int(message.text)] = 'admin'
+        await message.reply("Окей, %s теперь админ \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
         await message.reply("скидываю прогресс на айдл \U0001f600", keyboard=kb_admin.get_keyboard())
