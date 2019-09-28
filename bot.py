@@ -796,6 +796,13 @@ async def admin_add_14(message: types.Message, data: dict):
     await message.reply("Ща на 14 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
+@dp.message_handler(IsAdmin(True), text='admin')
+async def admin_add_14(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = 'admin'
+    await message.reply("Ща на admin этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+
 @dp.message_handler(IsAdmin(True))
 async def admin_assign_agent(message: types.Message, data: dict):
     if PROGRESS[message.from_id] == '1':
