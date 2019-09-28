@@ -855,8 +855,10 @@ async def handle_solving(message: types.Message, data: dict):
             PROGRESS[message.from_id] = 'idle'
             USERS[message.from_id] = 'lead'
             MARKS[LEADS[message.from_id]][3] = 5  # - place in !!! only int
+            MARKS[LEADS[message.from_id]][4] = 5  # - place in !!! only int
             await message.answer(
-                "Верно! Вы получили 5 баллов за верное решение. Бегом искать точку и решать задание "
+                "Верно! Вы получили 5 баллов за верное решение Эта загадка была сразу на два этапа, так что за "
+                "четвёртый вам тоже 5 баллов. Бегом искать точку и решать задание "
                 "агента - там ещё 10 баллов! " + TEXT['3s'], keyboard=kb_main.get_keyboard())
         elif message.text.lower() in TEXT['3a']:
             if message.text.lower() == 'к2':  # k2 k3 k4 m6 t9
