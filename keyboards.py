@@ -9,6 +9,11 @@ kb_choose = Keyboard(one_time=False)
 kb_choose.add_text_button('Я капитан', payload={"command": 'kb_choose_captain'})
 kb_choose.add_text_button('Я участник', payload={"command": 'kb_choose_participant'})
 
+kb_league = Keyboard(one_time=False)
+kb_league.add_text_button('Школьная', payload={"command": 'kb_school'})
+kb_league.add_text_button('Молодёжная', payload={"command": 'kb_junior'})
+kb_league.add_text_button('Предприятия', payload={"command": 'kb_zavod'})
+
 kb_back_to_start = Keyboard(one_time=False)
 kb_back_to_start.add_text_button('Назад', payload={"command": 'kb_back_to_start'})
 

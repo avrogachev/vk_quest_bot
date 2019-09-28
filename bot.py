@@ -138,7 +138,10 @@ USERS = {1596791: 'new_agent', # Ильина
          1972035: 'new_agent', #  САФОНОВ ВОДИТЕЛЬ ЛУНОХОДА КВАНТОРИУМ 12
          16880290: 'new_agent', #  ДЕМИДОВ РАКЕТНЫЙ ДВИГАТЕЛЬ КККМТ ВНУТРИ 3-4
          21470583: 'new_agent', #  БЛИНОВ ИПК МАШПРИБОР
-         2638468: 'new_agent' #  ШВЕЦОВА ИПК МАШПРИБОР
+         2638468: 'new_agent', #  ШВЕЦОВА ИПК МАШПРИБОР
+         6366897: 'new_agent',  # Полуянова попросила на 10 этап
+         393519695: 'new_agent',  # Нефёдова
+         17723698: 'new_agent'  # Урванцев КККМТ внутри
          }  # schema - id: lead, user, agent, lead_choose, user_choose, new, ...
 TEAMS = {}  # schema - team_id: team_name
 LEADS = {}  # schema - id: lead_id=team_id
@@ -167,15 +170,19 @@ AGENTS = {1596791: 1, # Ильина
           19684586: 11,  # КОНДАКОВ ГИРД АНТИКАФЕ ЛЕС
           #10566218: 'new_agent', #  ЯХНЕНКО ПРЕСССЛУЖБА
           14090242: 8,  # КОЗЛОВА АВАРИЯ НА МКС ПАМЯТНИК ИСАЕВУ
-          127088394: 4, # ТРОЯНОВСКИЙ РАКЕТНЫЙ ДВИГАТЕЛЬ КККМТ ВНУТРИ
+          127088394: 4,  # ТРОЯНОВСКИЙ РАКЕТНЫЙ ДВИГАТЕЛЬ КККМТ ВНУТРИ
+          17723698: 4,  # Урванцев КККМТ внутри
           322476919: 3,  # СЕЛИВЕРСТОВА КККМТ СНАРУЖИ ВЗЛЁТНО ПОСАДОЧНЫЙ КОМПЛЕКС
           165120836: 9,  # МЯТИН ВОЕННЫЙ КОСМОС ПУШКА ГРАБИНА
           1972035: 12,  # САФОНОВ ВОДИТЕЛЬ ЛУНОХОДА КВАНТОРИУМ 12
           16880290: 4,  # ДЕМИДОВ РАКЕТНЫЙ ДВИГАТЕЛЬ КККМТ ВНУТРИ 3-4
           21470583: 5,  # БЛИНОВ ИПК МАШПРИБОР
-          2638468: 5  # ШВЕЦОВА ИПК МАШПРИБОР
+          2638468: 5,  # ШВЕЦОВА ИПК МАШПРИБОР
+          6366897: 10, # Полуянова попросила на 10 этап
+          393519695: 8  # Нефёдова - попросила Козлова
           }  # schema - id: stage
 PROGRESS = {}  # schema - id_lead: 1..10 idle
+LEAGUE = {}  # schema: team_id: 1,2 or 3
 SEA_WAR = {}  # schema - id_lead: Set(['точки МБ','точки '])
 SEA_WAR_PRINT = {}  # schema - id_lead: [t0, t1, t2...]
 t0 = '\u3000К\u3000Л\u3000М\u3000Н\u3000О\u3000П\u3000Р\u3000С\u3000Т\n'
@@ -439,6 +446,36 @@ storage = Storage()
 dp.storage = storage
 
 
+@dp.message_handler(payload={"command": 'kb_school'})  # агент послал команду и не стал оценивать
+async def handle_school_league(message: types.Message, data: dict):
+    LEAGUE[LEADS[message.from_id]] = 1
+    await message.answer("Хорошо, это школьная лига.\n"
+                         "Попробуй нажать кнопки снизу - и вообще почаще проверяй свои баллы\n"
+                         "Если хочешь сразу ворваться отгадывать загадки, напиши мне 1 или 2 или даже 14\n"
+                         "Космической игры!"
+                         , keyboard=kb_main.get_keyboard())
+
+
+@dp.message_handler(payload={"command": 'kb_junior'})  # агент послал команду и не стал оценивать
+async def handle_junior_league(message: types.Message, data: dict):
+    LEAGUE[LEADS[message.from_id]] = 2
+    await message.answer("Хорошо, это молодёжная лига.\n"
+                         "Попробуй нажать кнопки снизу - и вообще почаще проверяй свои баллы\n"
+                         "Если хочешь сразу ворваться отгадывать загадки, напиши мне 1 или 2 или даже 14\n"
+                         "Космической игры!"
+                         , keyboard=kb_main.get_keyboard())
+
+    
+@dp.message_handler(payload={"command": 'kb_zavod'})  # агент послал команду и не стал оценивать
+async def handle_zavod_league(message: types.Message, data: dict):
+    LEAGUE[LEADS[message.from_id]] = 3
+    await message.answer("Рад видеть команду от предприятия!!!.\n"
+                         "Попробуй нажать кнопки снизу - и вообще почаще проверяй свои баллы\n"
+                         "Если хочешь сразу ворваться отгадывать загадки, напиши мне 1 или 2 или даже 14\n"
+                         "Космической игры!"
+                         , keyboard=kb_main.get_keyboard())
+
+
 @dp.message_handler(IsNewAgent(True))
 async def handle_new_agent(message: types.Message, data: dict):
     if message.from_id in AGENTS:
@@ -521,12 +558,20 @@ async def handle_agent_mark_back(message: types.Message, data: dict):
 
 @dp.message_handler(payload={"command": 'teams_agent'})  # агент послал команду и не стал оценивать
 async def handle_agent_team_list(message: types.Message, data: dict):
-    s = 'Список команд, получивших баллы за ваш этап (5 дают за разгадку загаки):\n'
-    for t in LEADS.values():
+    sq = 'Список команд, получивших баллы за ваш этап (5 дают за разгадку загаки):\n'
+    unique_team_ids = set(LEADS.values())
+    # unique_team_ids = set( val for dic in LEADS for val in dic.values())
+    for t in unique_team_ids:
         if MARKS[int(t)][AGENTS[message.from_id]] > 0:
             k = '%d %s: %d баллов\n' % (t, TEAMS[t], MARKS[int(t)][AGENTS[message.from_id]])
-            s = s + k
-    await message.answer(s, keyboard=kb_agent.get_keyboard())
+            sq = sq + k
+    await message.answer(sq, keyboard=kb_agent.get_keyboard())
+
+
+#>>> lis = [{"abc":"movies"}, {"abc": "sports"}, {"abc": "music"}, {"xyz": "music"}, {"pqr":"music"}, {"pqr":"movies"},{"pqr":"sports"}, {"pqr":"news"}, {"pqr":"sports"}]
+#>>> s = set( val for dic in lis for val in dic.values())
+#>>> s
+#set(['movies', 'news', 'music', 'sports'])
 
 
 @dp.message_handler(IsAgentMark(True))
@@ -733,6 +778,18 @@ async def admin_add_12(message: types.Message, data: dict):
     await message.reply("Ща на 12 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
 
 
+@dp.message_handler(IsAdmin(True), text='13')
+async def admin_add_13(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '13'
+    await message.reply("Ща на 13 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
+@dp.message_handler(IsAdmin(True), text='14')
+async def admin_add_14(message: types.Message, data: dict):
+    PROGRESS[message.from_id] = '14'
+    await message.reply("Ща на 14 этап агента определим, какой айди? \U0001f600", keyboard=kb_admin.get_keyboard())
+
+
 @dp.message_handler(IsAdmin(True))
 async def admin_assign_agent(message: types.Message, data: dict):
     if PROGRESS[message.from_id] == '1':
@@ -795,6 +852,16 @@ async def admin_assign_agent(message: types.Message, data: dict):
         AGENTS[int(message.text)] = '12'
         USERS[int(message.text)] = 'new_agent'
         await message.reply("Окей, %s теперь агент 12 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
+    elif PROGRESS[message.from_id] == '13':
+        PROGRESS[message.from_id] = 'idle'
+        AGENTS[int(message.text)] = '12'
+        USERS[int(message.text)] = 'new_agent'
+        await message.reply("Окей, %s теперь агент 13 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
+    elif PROGRESS[message.from_id] == '14':
+        PROGRESS[message.from_id] = 'idle'
+        AGENTS[int(message.text)] = '12'
+        USERS[int(message.text)] = 'new_agent'
+        await message.reply("Окей, %s теперь агент 14 этапа \U0001f600" % message.text, keyboard=kb_admin.get_keyboard())
     else:
         PROGRESS[message.from_id] = 'idle'
         await message.reply("скидываю прогресс на айдл \U0001f600", keyboard=kb_admin.get_keyboard())
@@ -1196,10 +1263,11 @@ async def handle_lead_chooses_team_name(message: types.Message, data: dict):
     TEAMS[team_id[c]] = message.text
     LEADS[message.from_id] = team_id[c]  # сам себе капитан
     MARKS[team_id[c]] = {1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0, 8: 0, 9: 0, 10: 0, 11: 0, 12: 0, 13: 0, 14: 0}
-    await message.answer("Ура, команда %s зарегистрирована!\nЧтобы члены твоей команды смогли к тебе присоединиться, "
+    await message.answer("Ура, команда %s зарегистрирована!\n Осталось указать лигу и регистрация окончена. "
+                         "Чтобы члены твоей команды смогли к тебе присоединиться, "
                          "пусть нажмут кнопку \"Я участник\" и напишут мне этот код: \n%s" %
                          (TEAMS[team_id[c]], team_id[c]),
-                         keyboard=kb_main.get_keyboard())
+                         keyboard=kb_league.get_keyboard())
     c = c + 1
 
 
