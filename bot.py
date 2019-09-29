@@ -680,10 +680,13 @@ async def handle_admin_teams(message: types.Message, data: dict):
     school = 'ШКОЛЬНЫЕ команды\n'
     junior = 'МОЛОДЁЖНЫЕ команды\n'
     zavod = 'ПРЕДПРИЯТИЯ\n'
+    ne_v_lige = 'не в лиге, говно какое-то\n'
     unique_team_ids = set(LEADS.values())
     # unique_team_ids = set( val for dic in LEADS for val in dic.values())
     for t in unique_team_ids:
-        if LEAGUE[int(t)] == 1:  # school
+        if t not in LEAGUE.keys():
+            ne_v_lige = 'не в лиге, говно какое-то\n' + '1'
+        elif LEAGUE[int(t)] == 1:  # school
             total = 0
             for ele in range(1, len(MARKS[int(t)])+1):
                 total = total + MARKS[int(t)][ele]
