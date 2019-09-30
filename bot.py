@@ -691,14 +691,14 @@ async def handle_admin_teams(message: types.Message, data: dict):
             for ele in range(1, len(MARKS[int(t)])+1):
                 total = total + MARKS[int(t)][ele]
             k = '%d %s: %d баллов\n' % (t, TEAMS[t], total)
-            school = school + k
+            school = school + k  # невеcта
         elif LEAGUE[int(t)] == 2:  # junior
             total = 0
             for ele in range(1, len(MARKS[int(t)])+1):
                 total = total + MARKS[int(t)][ele]
             k = '%d %s: %d баллов\n' % (t, TEAMS[t], total)
             junior = junior + k
-        elif LEAGUE[int(t)] == 2:  # zavod
+        elif LEAGUE[int(t)] == 3:  # zavod
             total = 0
             for ele in range(1, len(MARKS[int(t)])+1):
                 total = total + MARKS[int(t)][ele]
