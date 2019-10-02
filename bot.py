@@ -1,10 +1,10 @@
 import logging
 import random
 from vk import types
-from vk.bot_framework import BaseRule, BaseMiddleware, rules
+from vk.bot_framework import BaseRule, BaseMiddleware, rules  # TODO: use NamedRule instead of rules
 from vk import VK
 from vk.utils import TaskManager
-from vk.bot_framework import Dispatcher
+from vk.bot_framework import Dispatcher  # TODO: use blueprints to recognize access levels
 from vk.bot_framework import Storage
 import emoji  # https://www.webfx.com/tools/emoji-cheat-sheet/
 
@@ -24,7 +24,7 @@ team_id = [i for i in range(100, 1000)]  # быдлокод для выдачи 
 random.shuffle(team_id)  # и двум командам бот дал один айди - никогда так не пишите и не делайте. Используйте
 c = 0  # dp.storage.place("counter", counter) и его асинхронные методы .get и .update, тогда накладок не будет
 
-# dp.storage.place("counter", counter)
+# dp.storage.place("counter", counter)  TODO: use storage instead of global variable
 
 TEXT = {1: 'Памятник загадан с помощью AR-приложения. Ссылка на его скачивание, если вы не сделали этого заранее: '
            'https://play.google.com/store/apps/details?id=ru.izobretarium.app.spacear\nФотография места, которое нужно '
@@ -1070,10 +1070,10 @@ async def admin_list_of_teams(message: types.Message, data: dict):
     await message.reply("Print list of teams to admin")
 
 
-@dp.message_handler(rules.Command("get"), IsAdmin(False))
-async def get_admin_rights(message: types.Message, data: dict):
-    USERS[message.from_id] = "admin"
-    await message.reply("Successfully! \U0001f600")
+#@dp.message_handler(rules.Command("get"), IsAdmin(False))
+#async def get_admin_rights(message: types.Message, data: dict):
+#    USERS[message.from_id] = "admin"
+#    await message.reply("Successfully! \U0001f600")
 
 
 @dp.message_handler(rules.Command("buy"), have_args=[lambda arg: arg.isdigit(), lambda arg: arg > 10])
